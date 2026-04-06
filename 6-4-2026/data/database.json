@@ -1,0 +1,255 @@
+{
+  "books": [
+    {
+      "id": "book-001",
+      "isbn": "978-0-13-468599-1",
+      "title": "Clean Code",
+      "author": "Robert C. Martin",
+      "category": "Lập trình"
+    },
+    {
+      "id": "book-002",
+      "isbn": "978-0-20-163361-0",
+      "title": "Design Patterns",
+      "author": "Gang of Four",
+      "category": "Lập trình"
+    },
+    {
+      "id": "book-003",
+      "isbn": "978-0-59-651798-1",
+      "title": "JavaScript: The Good Parts",
+      "author": "Douglas Crockford",
+      "category": "Lập trình"
+    },
+    {
+      "id": "book-004",
+      "isbn": "978-0-74-328355-4",
+      "title": "Atomic Habits",
+      "author": "James Clear",
+      "category": "Phát triển bản thân"
+    },
+    {
+      "id": "book-005",
+      "isbn": "978-0-06-093546-9",
+      "title": "Sapiens: Lược sử loài người",
+      "author": "Yuval Noah Harari",
+      "category": "Lịch sử"
+    }
+  ],
+  "bookCopies": [
+    {
+      "barcode": "B-CC01-0001",
+      "bookId": "book-001",
+      "status": "BORROWED"
+    },
+    {
+      "barcode": "B-CC01-0002",
+      "bookId": "book-001",
+      "status": "AVAILABLE"
+    },
+    {
+      "barcode": "B-CC01-0003",
+      "bookId": "book-001",
+      "status": "AVAILABLE"
+    },
+    {
+      "barcode": "B-DP02-0001",
+      "bookId": "book-002",
+      "status": "AVAILABLE"
+    },
+    {
+      "barcode": "B-DP02-0002",
+      "bookId": "book-002",
+      "status": "AVAILABLE"
+    },
+    {
+      "barcode": "B-JS03-0001",
+      "bookId": "book-003",
+      "status": "AVAILABLE"
+    },
+    {
+      "barcode": "B-JS03-0002",
+      "bookId": "book-003",
+      "status": "AVAILABLE"
+    },
+    {
+      "barcode": "B-AH04-0001",
+      "bookId": "book-004",
+      "status": "AVAILABLE"
+    },
+    {
+      "barcode": "B-SP05-0001",
+      "bookId": "book-005",
+      "status": "AVAILABLE"
+    },
+    {
+      "barcode": "B-SP05-0002",
+      "bookId": "book-005",
+      "status": "AVAILABLE"
+    }
+  ],
+  "members": [
+    {
+      "id": "mem-001",
+      "name": "Nguyễn Văn Tùng",
+      "email": "tung@gmail.com",
+      "tier": "STANDARD",
+      "status": "ACTIVE",
+      "unpaidFineIds": [],
+      "paidFineIds": [],
+      "memberSince": "2026-01-10T00:00:00.000Z",
+      "expiryDate": "2027-01-10T00:00:00.000Z",
+      "passwordHash": "$2b$10$M17WNJuc9fFyH0esAIK2OONquMsEfT3Rz.tyCzmKjHpugG51xchIS"
+    },
+    {
+      "id": "mem-002",
+      "name": "Trần Thị Mai",
+      "email": "mai@gmail.com",
+      "tier": "PREMIUM",
+      "status": "ACTIVE",
+      "unpaidFineIds": [],
+      "paidFineIds": [],
+      "memberSince": "2025-06-15T00:00:00.000Z",
+      "expiryDate": "2026-06-15T00:00:00.000Z",
+      "passwordHash": "$2b$10$lT2WlZdrg7AAuC/OEiaDcumuKSaU70AQgRyMYyUtR2wwWXRvJjY4S"
+    },
+    {
+      "id": "mem-003",
+      "name": "Lê Minh Khoa",
+      "email": "khoa@gmail.com",
+      "tier": "STAFF",
+      "status": "ACTIVE",
+      "unpaidFineIds": [],
+      "paidFineIds": [],
+      "memberSince": "2024-09-01T00:00:00.000Z",
+      "expiryDate": "2029-09-01T00:00:00.000Z",
+      "passwordHash": "$2b$10$EBKj/c7t1i3VY9h6QatlruP0r18QWEpnuyVqSFIqExOiLpTzbQz32"
+    },
+    {
+      "id": "mem-004",
+      "name": "Phạm Thị Lan",
+      "email": "lan@gmail.com",
+      "tier": "STANDARD",
+      "status": "ACTIVE",
+      "unpaidFineIds": [],
+      "paidFineIds": [],
+      "memberSince": "2026-02-20T00:00:00.000Z",
+      "expiryDate": "2027-02-20T00:00:00.000Z",
+      "passwordHash": "$2b$10$FTeNyO8.1PDOwFi/wYVBkOhuXynOGgUzl9nkfEvh1OXF9rS4gGx6."
+    },
+    {
+      "id": "c6d34e05-8d78-446c-8852-4f71847f525b",
+      "name": "Nguyễn Quốc Tùng",
+      "email": "tungg@gmail.com",
+      "passwordHash": "$2b$10$jhuzSa9MNyhx7UXNCNsFtOCg6CxMpntzKrNM.ouLpmEoiWwpxMGe.",
+      "tier": "STANDARD",
+      "status": "ACTIVE",
+      "unpaidFineIds": [],
+      "paidFineIds": [],
+      "memberSince": "2026-04-06T10:30:37.256Z",
+      "expiryDate": "2027-04-06T10:30:37.256Z"
+    }
+  ],
+  "loans": [
+    {
+      "id": "ccf5eb21-233a-4496-b8ac-df5d64a80fe4",
+      "bookCopyBarcode": "B-CC01-0001",
+      "memberId": "mem-001",
+      "borrowDate": "2026-04-06T07:30:33.975Z",
+      "dueDate": "2026-04-20T07:30:33.975Z",
+      "returnDate": "2026-04-06T07:30:54.844Z",
+      "status": "RETURNED",
+      "renewCount": 0,
+      "renewalHistory": [],
+      "fineAmount": 0
+    },
+    {
+      "id": "85100bb2-2a44-44b0-b6f9-a6feec026ce6",
+      "bookCopyBarcode": "B-CC01-0001",
+      "memberId": "mem-001",
+      "borrowDate": "2026-04-06T09:09:18.751Z",
+      "dueDate": "2026-04-20T09:09:18.751Z",
+      "returnDate": null,
+      "status": "ACTIVE",
+      "renewCount": 0,
+      "renewalHistory": [],
+      "fineAmount": 0
+    }
+  ],
+  "fines": [],
+  "reservations": [],
+  "auditLogs": [
+    {
+      "id": "aa9cf6ba-2265-4f52-80df-5178ad63e6b7",
+      "actorId": "mem-001",
+      "action": "CHECK_OUT",
+      "targetId": "B-CC01-0001",
+      "timestamp": "2026-04-06T07:30:33.981Z",
+      "note": null
+    },
+    {
+      "id": "614d1595-c394-4128-82e2-14c139b15783",
+      "actorId": "SYSTEM",
+      "action": "CHECK_IN",
+      "targetId": "B-CC01-0001",
+      "timestamp": "2026-04-06T07:30:54.846Z",
+      "note": null
+    },
+    {
+      "id": "b6fd07a7-30d1-4759-ab2d-4f03f1a11993",
+      "actorId": "mem-001",
+      "action": "CHECK_OUT",
+      "targetId": "B-CC01-0001",
+      "timestamp": "2026-04-06T09:09:18.758Z",
+      "note": null
+    },
+    {
+      "id": "9d4b9ff9-4a7a-4bb9-b597-52d610b205bb",
+      "actorId": "mem-001",
+      "action": "LOGIN_FAILED",
+      "targetId": "Sai mật khẩu",
+      "timestamp": "2026-04-06T10:18:18.184Z",
+      "note": null
+    },
+    {
+      "id": "090193a0-e473-4383-bee6-c6cf38664fdc",
+      "actorId": "mem-001",
+      "action": "LOGIN_SUCCESS",
+      "targetId": "Đăng nhập thành công",
+      "timestamp": "2026-04-06T10:19:14.636Z",
+      "note": null
+    },
+    {
+      "id": "f12db07f-dd90-48f3-9662-3126763d84ff",
+      "actorId": "mem-003",
+      "action": "LOGIN_SUCCESS",
+      "targetId": "Đăng nhập thành công",
+      "timestamp": "2026-04-06T10:24:00.678Z",
+      "note": null
+    },
+    {
+      "id": "f5f3b41e-4943-47ee-b43c-e9d15d8872fa",
+      "actorId": "mem-003",
+      "action": "LOGIN_SUCCESS",
+      "targetId": "Đăng nhập thành công",
+      "timestamp": "2026-04-06T10:24:19.626Z",
+      "note": null
+    },
+    {
+      "id": "4ce220aa-b313-40ed-a6d2-b5d77c829eeb",
+      "actorId": "mem-003",
+      "action": "LOGIN_SUCCESS",
+      "targetId": "Đăng nhập thành công",
+      "timestamp": "2026-04-06T10:28:17.782Z",
+      "note": null
+    },
+    {
+      "id": "8e90aad6-6588-4f5b-aac6-998a11111a20",
+      "actorId": "c6d34e05-8d78-446c-8852-4f71847f525b",
+      "action": "LOGIN_SUCCESS",
+      "targetId": "Đăng nhập thành công",
+      "timestamp": "2026-04-06T10:30:47.152Z",
+      "note": null
+    }
+  ]
+}
