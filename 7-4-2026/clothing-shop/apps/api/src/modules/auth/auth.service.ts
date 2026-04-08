@@ -67,10 +67,25 @@ export class AuthService {
     if (!isMatch) {
       throw new UnauthorizedException('Sai mật khẩu');
     }
-    return this.generateToken(user.id, user.email);
+
+    const permissionQuery = await this.db.query(
+      `SELECT CONCAT(p.resource, ':', p.action) AS perm 
+      FROM user_roles ur
+      JOIN role_permissions rp ON rp.role_id = ur.role_id
+      JOIN permissions p ON p.id = rp.permission_id
+      WHERE ur.user_id = $1`,
+      [user.id],
+    );
+    const permissions = permissionQuery.rows.map((r) => r.perm);
+    return this.generateToken(user.id, user.email, permissions);
   }
-  private generateToken(userId: string, email: string) {
-    const payload = { sub: userId, email };
+
+  private generateToken(
+    userId: string,
+    email: string,
+    permissions: string[] = [],
+  ) {
+    const payload = { sub: userId, email, permissions };
     return {
       accessToken: this.jwtService.sign(payload),
     };

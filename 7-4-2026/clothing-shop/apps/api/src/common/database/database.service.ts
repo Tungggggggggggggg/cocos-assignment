@@ -10,7 +10,6 @@ import { Pool, PoolClient } from 'pg';
 @Injectable()
 export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(DatabaseService.name);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private pool!: Pool;
 
   constructor(private readonly configService: ConfigService) {}
@@ -25,7 +24,6 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
     await this.pool.end();
   }
 
-  // Dùng unknown[] thay vì any[] để ESLint strict mode không phàn nàn
   async query(sql: string, params?: unknown[]) {
     return this.pool.query(sql, params);
   }
