@@ -16,7 +16,7 @@ export default function AboutPage() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-24 text-center">
-        <h2 className="text-3xl font-bold text-gray-900 mb-8 italic">"Fashion that speaks without words."</h2>
+        <h2 className="text-3xl font-bold text-gray-900 mb-8 italic">&quot;Fashion that speaks without words.&quot;</h2>
         <p className="text-lg text-gray-600 leading-relaxed mb-6">
           Được thành lập vào năm 2024, Fashion Hub không chỉ là một cửa hàng thời trang, mà là một trải nghiệm sống. Chúng tôi tin rằng mỗi bộ trang phục bạn mặc là một tuyên ngôn về cá tính và phong cách riêng biệt.
         </p>

@@ -34,7 +34,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
-      message: Array.isArray(message) ? message[0] : message, 
+      message: Array.isArray(message) ? message[0] : message,
     });
   }
 }

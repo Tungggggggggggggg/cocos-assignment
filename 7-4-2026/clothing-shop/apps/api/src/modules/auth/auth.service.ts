@@ -25,11 +25,9 @@ export class AuthService {
       throw new UnauthorizedException('Email hoặc mật khẩu không chính xác');
     }
 
-    
     const permissions = await this.getUserPermissions(user.email);
     const role = permissions.includes('admin:access') ? 'admin' : 'customer';
 
-    
     const payload = {
       sub: user.id,
       email: user.email,
@@ -65,7 +63,6 @@ export class AuthService {
   }
 
   async syncUser(email: string, fullName: string) {
-    
     const check = await this.db.query(
       'SELECT id FROM users WHERE LOWER(email) = LOWER($1)',
       [email],

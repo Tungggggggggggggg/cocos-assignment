@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { Product } from "@/types/schema";
 
 export default function Home() {
-  const { data, error, isLoading } = useSWR<{ items: Product[], meta: any }>('/api/products?limit=8', apiFetch);
+  const { data, error, isLoading } = useSWR<{ items: Product[], meta: { total: number } }>('/api/products?limit=8', apiFetch);
   const products = data?.items || [];
 
   if (error) return (

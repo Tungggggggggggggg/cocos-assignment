@@ -17,7 +17,10 @@ export class UsersController {
 
   @Put(':id/role')
   @Permissions('users:manage')
-  async updateRole(@Param('id') userId: string, @Body() body: { role: string }) {
+  async updateRole(
+    @Param('id') userId: string,
+    @Body() body: { role: string },
+  ) {
     return this.usersService.updateRole(userId, body.role);
   }
 }

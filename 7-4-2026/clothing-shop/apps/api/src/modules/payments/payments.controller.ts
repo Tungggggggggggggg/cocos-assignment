@@ -9,7 +9,6 @@ export class PaymentsController {
   async handleWebhook(
     @Body() body: { orderId: string; gatewayRef: string; status: string },
   ) {
-    
     if (body.status === 'success') {
       return this.paymentsService.confirmPaymentWebhook(body.orderId);
     }

@@ -181,7 +181,6 @@ export class OrdersService {
     return this.db.transaction(async (client) => {
       const variantIds = items.map((i) => i.variantId).sort();
 
-      
       const inventoryQuery = await client.query(
         `SELECT i.variant_id, i.quantity_on_hand, i.quantity_reserved, i.avg_cost,
                 pv.retail_price, p.name as product_name, pv.sku, pv.size, pv.color
@@ -199,7 +198,6 @@ export class OrdersService {
 
       let subtotal = 0;
 
-      
       for (const item of items) {
         const inv = invMap.get(item.variantId);
         if (!inv) {
@@ -225,7 +223,6 @@ export class OrdersService {
       );
       const orderId = orderResult.rows[0].id;
 
-      
       for (const item of items) {
         const inv = invMap.get(item.variantId);
 
@@ -241,7 +238,6 @@ export class OrdersService {
           ],
         );
 
-        
         await client.query(
           `UPDATE inventory 
            SET quantity_on_hand = quantity_on_hand - $1
@@ -249,7 +245,6 @@ export class OrdersService {
           [item.quantity, item.variantId],
         );
 
-        
         await client.query(
           `INSERT INTO inventory_transactions (variant_id, type, quantity_delta, unit_cost, reference_id, reference_type)
            VALUES ($1, 'sale_deduct', $2, $3, $4, 'order')`,
@@ -257,7 +252,6 @@ export class OrdersService {
         );
       }
 
-      
       await client.query(
         `INSERT INTO payments (order_id, status, amount) 
          VALUES ($1, 'completed', $2)`,

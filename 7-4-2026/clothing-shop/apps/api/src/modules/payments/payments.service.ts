@@ -7,7 +7,6 @@ export class PaymentsService {
 
   async confirmPaymentWebhook(orderId: string) {
     return this.db.transaction(async (client) => {
-      
       const orderQuery = await client.query(
         `SELECT id, status, total_amount FROM orders WHERE id = $1 FOR UPDATE`,
         [orderId],
@@ -17,9 +16,8 @@ export class PaymentsService {
 
       const order = orderQuery.rows[0];
       if (order.status !== 'pending')
-        return { message: 'Đơn hàng đã được xử lý' }; 
+        return { message: 'Đơn hàng đã được xử lý' };
 
-      
       const items = await client.query(
         `SELECT oi.variant_id, oi.quantity, oi.unit_price, i.avg_cost
          FROM order_items oi
@@ -29,13 +27,11 @@ export class PaymentsService {
       );
 
       for (const item of items.rows) {
-        
         await client.query(
           `UPDATE order_items SET unit_cost = $1 WHERE order_id = $2 AND variant_id = $3`,
           [item.avg_cost, orderId, item.variant_id],
         );
 
-        
         await client.query(
           `UPDATE inventory SET
              quantity_on_hand = quantity_on_hand - $1,
@@ -44,7 +40,6 @@ export class PaymentsService {
           [item.quantity, item.variant_id],
         );
 
-        
         await client.query(
           `INSERT INTO inventory_transactions (variant_id, type, quantity_delta, unit_cost, reference_id, reference_type)
            VALUES ($1, 'sale_deduct', $2, $3, $4, 'order')`,

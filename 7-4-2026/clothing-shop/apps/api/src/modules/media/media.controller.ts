@@ -28,14 +28,12 @@ export class MediaController {
   constructor(private readonly mediaService: MediaService) {}
 
   @Post('upload')
-  @Permissions('products:create') 
+  @Permissions('products:create')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @UploadedFile(
       new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }), 
-        ],
+        validators: [new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 })],
       }),
     )
     file: MulterFile,

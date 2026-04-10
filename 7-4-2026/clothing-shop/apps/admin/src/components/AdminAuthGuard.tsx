@@ -4,7 +4,6 @@ import { supabase } from '../lib/supabase';
 import { useRouter, usePathname } from 'next/navigation';
 
 export default function AdminAuthGuard({ children }: { children: React.ReactNode }) {
-  const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
@@ -22,7 +21,7 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
 
       
       const localToken = localStorage.getItem('local_access_token');
-      let localUser: any = null;
+      let localUser: { user_metadata?: { role: string }, role?: string } | null = null;
       
       if (localToken) {
         try {
@@ -47,7 +46,6 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
         console.log("[AdminAuthGuard] Không tìm thấy quyền Admin hợp lệ, chuyển hướng...");
         router.push('/login');
       } else {
-        setSession(supabaseSession || { user: localUser });
         setLoading(false);
       }
     };

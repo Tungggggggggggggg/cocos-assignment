@@ -31,7 +31,6 @@ export class MediaService implements OnModuleInit {
   }
 
   async uploadImage(file: MulterFile): Promise<string> {
-    
     const allowedMimeTypes = [
       'image/jpeg',
       'image/png',
@@ -44,12 +43,10 @@ export class MediaService implements OnModuleInit {
       );
     }
 
-    
     const fileExt = file.originalname.split('.').pop();
     const fileName = `${Date.now()}-${Math.floor(Math.random() * 100000)}.${fileExt}`;
     const filePath = `products/${fileName}`;
 
-    
     const { error } = await this.supabase.storage
       .from('product-images')
       .upload(filePath, file.buffer, {
@@ -63,7 +60,6 @@ export class MediaService implements OnModuleInit {
       );
     }
 
-    
     const { data: publicUrlData } = this.supabase.storage
       .from('product-images')
       .getPublicUrl(filePath);

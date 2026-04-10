@@ -10,7 +10,6 @@ export class OrdersCronService {
 
   @Cron(CronExpression.EVERY_MINUTE)
   async handleExpiredOrders() {
-    
     const timeoutThreshold = new Date(
       Date.now() - 15 * 60 * 1000,
     ).toISOString();
@@ -38,13 +37,11 @@ export class OrdersCronService {
         );
 
         for (const item of items.rows) {
-          
           await trxClient.query(
             `UPDATE inventory SET quantity_reserved = quantity_reserved - $1 WHERE variant_id = $2`,
             [item.quantity, item.variant_id],
           );
 
-          
           await trxClient.query(
             `INSERT INTO inventory_transactions (variant_id, type, quantity_delta, unit_cost, reference_id, reference_type)
              VALUES ($1, 'sale_release', $2, $3, $4, 'order')`,
@@ -52,7 +49,6 @@ export class OrdersCronService {
           );
         }
 
-        
         await trxClient.query(
           `UPDATE orders SET status = 'cancelled', cancel_reason = 'Quá hạn thanh toán 15 phút' WHERE id = $1`,
           [orderId],

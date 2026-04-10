@@ -25,18 +25,15 @@ export class SupabaseStrategy extends PassportStrategy(Strategy, 'supabase') {
       throw new UnauthorizedException('Token Supabase không hợp lệ');
     }
 
-    
     await this.authService.syncUser(
       payload.email,
       payload.user_metadata?.full_name || payload.email,
     );
 
-    
     const permissions = await this.authService.getUserPermissions(
       payload.email,
     );
 
-    
     const role =
       permissions.length > 0
         ? permissions.includes('admin:access')

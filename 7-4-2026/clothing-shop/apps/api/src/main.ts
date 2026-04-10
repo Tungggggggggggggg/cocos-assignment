@@ -8,16 +8,12 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  
   app.enableCors();
 
-  
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
-  
   app.useGlobalInterceptors(new TransformInterceptor());
 
-  
   app.useGlobalFilters(new AllExceptionsFilter());
 
   await app.listen(process.env.PORT ?? 3000);
