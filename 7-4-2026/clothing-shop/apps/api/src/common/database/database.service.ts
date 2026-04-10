@@ -16,7 +16,13 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
 
   onModuleInit(): void {
     const connectionString = this.configService.get<string>('DATABASE_URL');
-    this.pool = new Pool({ connectionString, max: 10 });
+    this.pool = new Pool({
+      connectionString,
+      max: 10,
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    });
     this.logger.log('Database Connection Pool initialized.');
   }
 

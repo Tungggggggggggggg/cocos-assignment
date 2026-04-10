@@ -1,13 +1,8 @@
-import {
-  Injectable,
-  ConflictException,
-  UnauthorizedException,
-  InternalServerErrorException,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcryptjs';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { DatabaseService } from '../../common/database/database.service';
-import { RegisterDto, LoginDto } from './dto/auth.dto';
+import * as bcrypt from 'bcryptjs';
+
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -16,78 +11,70 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(dto: RegisterDto) {
-    return this.db.transaction(async (client) => {
-      const existCheck = await client.query(
-        'SELECT id FROM users WHERE email = $1',
-        [dto.email],
-      );
-      if ((existCheck.rowCount ?? 0) > 0) {
-        throw new ConflictException('Email này đã được sử dụng');
-      }
-
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(dto.password, salt);
-
-      const insertUser = await client.query(
-        'INSERT INTO users (email, password_hash, full_name) VALUES ($1, $2, $3) RETURNING id, email, full_name',
-        [dto.email, hashedPassword, dto.fullName],
-      );
-      const user = insertUser.rows[0];
-
-      const roleCheck = await client.query(
-        'SELECT id FROM roles WHERE name = $1',
-        ['customer'],
-      );
-      if (roleCheck.rowCount === 0) {
-        throw new InternalServerErrorException(
-          'System missing baseline roles. Run seeder!',
-        );
-      }
-
-      await client.query(
-        'INSERT INTO user_roles (user_id, role_id) VALUES ($1, $2)',
-        [user.id, roleCheck.rows[0].id],
-      );
-      return this.generateToken(user.id, user.email);
-    });
-  }
-
-  async login(dto: LoginDto) {
-    const result = await this.db.query(
-      'SELECT id, email, password_hash FROM users WHERE email = $1',
-      [dto.email],
-    );
+  async validateLocalUser(email: string, pass: string): Promise<any> {
+    const sql = `SELECT id, email, password_hash, full_name FROM users WHERE LOWER(email) = LOWER($1) AND is_active = true`;
+    const result = await this.db.query(sql, [email]);
     if (result.rowCount === 0) {
-      throw new UnauthorizedException('Tài khoản không tồn tại');
+      throw new UnauthorizedException('Email hoặc mật khẩu không chính xác');
     }
+
     const user = result.rows[0];
+    const isMatch = await bcrypt.compare(pass, user.password_hash);
 
-    const isMatch = await bcrypt.compare(dto.password, user.password_hash);
     if (!isMatch) {
-      throw new UnauthorizedException('Sai mật khẩu');
+      throw new UnauthorizedException('Email hoặc mật khẩu không chính xác');
     }
 
-    const permissionQuery = await this.db.query(
-      `SELECT CONCAT(p.resource, ':', p.action) AS perm 
-      FROM user_roles ur
-      JOIN role_permissions rp ON rp.role_id = ur.role_id
-      JOIN permissions p ON p.id = rp.permission_id
-      WHERE ur.user_id = $1`,
-      [user.id],
-    );
-    const permissions = permissionQuery.rows.map((r) => r.perm);
-    return this.generateToken(user.id, user.email, permissions);
+    
+    const permissions = await this.getUserPermissions(user.email);
+    const role = permissions.includes('admin:access') ? 'admin' : 'customer';
+
+    
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      user_metadata: {
+        full_name: user.full_name,
+        role: role,
+      },
+    };
+
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        full_name: user.full_name,
+        role: role,
+      },
+      access_token: this.jwtService.sign(payload),
+    };
   }
 
-  private generateToken(
-    userId: string,
-    email: string,
-    permissions: string[] = [],
-  ) {
-    const payload = { sub: userId, email, permissions };
-    return {
-      accessToken: this.jwtService.sign(payload),
-    };
+  async getUserPermissions(email: string): Promise<string[]> {
+    const sql = `
+      SELECT DISTINCT p.resource || ':' || p.action as permission
+      FROM users u
+      JOIN user_roles ur ON u.id = ur.user_id
+      JOIN roles r ON ur.role_id = r.id
+      JOIN role_permissions rp ON r.id = rp.role_id
+      JOIN permissions p ON rp.permission_id = p.id
+      WHERE LOWER(u.email) = LOWER($1) AND u.is_active = true AND r.is_active = true
+    `;
+    const result = await this.db.query(sql, [email]);
+    return result.rows.map((r) => r.permission);
+  }
+
+  async syncUser(email: string, fullName: string) {
+    
+    const check = await this.db.query(
+      'SELECT id FROM users WHERE LOWER(email) = LOWER($1)',
+      [email],
+    );
+    if (check.rowCount === 0) {
+      await this.db.query(
+        'INSERT INTO users (email, full_name) VALUES ($1, $2)',
+        [email, fullName],
+      );
+    }
   }
 }

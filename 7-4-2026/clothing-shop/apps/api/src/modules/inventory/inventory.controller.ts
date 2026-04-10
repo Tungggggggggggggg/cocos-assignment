@@ -1,20 +1,25 @@
-import { Controller, Post, Body, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { InventoryService } from './inventory.service';
-import type { AuthenticatedRequest } from '../../common/interfaces/request.interface';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 @Controller('api/inventory')
 export class InventoryController {
   constructor(private readonly inventoryService: InventoryService) {}
 
+  @UseGuards(JwtAuthGuard)
+  @Get('logs')
+  async getLogs() {
+    return this.inventoryService.getLogs();
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post('imports')
   async importGoods(
     @Body()
     body: {
       items: { variantId: string; quantity: number; unitCost: number }[];
     },
-    @Req() req: AuthenticatedRequest,
   ) {
-    const userId = req.user?.sub || '00000000-0000-0000-0000-000000000000';
-    return this.inventoryService.importGoods(body.items, userId);
+    return this.inventoryService.importGoods(body.items);
   }
 }
