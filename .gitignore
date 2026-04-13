@@ -1,0 +1,25 @@
+# Cocos Creator folders
+library/
+temp/
+local/
+build/
+profiles/
+
+# Logs
+logs/
+*.log
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Extension folders
+packages/
+
+# TypeScript/JavaScript
+node_modules/
+bin/
+jsconfig.json
+tsconfig.json
+
+GUI Pro-FantasyRPG
