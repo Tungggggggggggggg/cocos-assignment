@@ -1,9 +1,9 @@
 {
   "ver": "1.2.5",
-  "uuid": "4a2ebdd1-45a9-46b3-b8d3-fa8658883801",
+  "uuid": "3e208c35-9adc-428a-b2bb-e5280bfc1ab2",
   "importer": "auto-atlas",
-  "maxWidth": 2048,
-  "maxHeight": 2048,
+  "maxWidth": 1024,
+  "maxHeight": 1024,
   "padding": 2,
   "compressionLevel": 6,
   "allowRotation": true,
