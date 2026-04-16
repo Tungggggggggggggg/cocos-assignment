@@ -30,7 +30,7 @@ cc.Class({
         this.p1BaseScale = Math.abs(this.player1.scaleX);
         this.p2BaseScale = Math.abs(this.player2.scaleX);
 
-        this._updateCache();
+        this.updateCache();
 
         const { TOUCH_START, TOUCH_END, TOUCH_CANCEL } = cc.Node.EventType;
 
@@ -43,7 +43,7 @@ cc.Class({
         this.btnBackNode.on(TOUCH_CANCEL, this.stopMove, this);
     },
 
-    _updateCache() {
+    updateCache() {
         const isP1 = this.activePlayer === this.player1;
 
         this.activeSpine = isP1 ? this.p1Spine : this.p2Spine;
@@ -51,7 +51,7 @@ cc.Class({
         this.inactiveBar = isP1 ? this.p2Bar : this.p1Bar;
     },
 
-    _fixChildrenScale(playerNode) {
+    syncChildrenOrientation(playerNode) {
         const sign = Math.sign(playerNode.scaleX);
         playerNode.children.forEach((child) => {
             child.scaleX = Math.abs(child.scaleX) * sign;
@@ -72,7 +72,7 @@ cc.Class({
             this.moveDir = -1;
         }
 
-        this._fixChildrenScale(this.activePlayer);
+        this.syncChildrenOrientation(this.activePlayer);
 
         this.playAnim("walk");
     },
@@ -93,7 +93,7 @@ cc.Class({
             this.moveDir = 1;
         }
 
-        this._fixChildrenScale(this.activePlayer);
+        this.syncChildrenOrientation(this.activePlayer);
 
         this.playAnim("walk");
     },
@@ -128,7 +128,7 @@ cc.Class({
             this.activePlayer === this.player1 ? this.player2 : this.player1;
 
         this.currentAnim = "";
-        this._updateCache();
+        this.updateCache();
 
         const isP1 = this.activePlayer === this.player1;
         const isDead = isP1 ? this.p1Dead : this.p2Dead;
