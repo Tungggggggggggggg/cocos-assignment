@@ -29,7 +29,7 @@ cc.Class({
     createItem(name) {
         const node = cc.instantiate(this.btnPrefab);
         node.parent = this.contentView;
-        node.getComponent("animItem")?.init(name, (selectedName) => {
+        node.getComponent("AnimationItem")?.init(name, (selectedName) => {
             this.playAnimation(selectedName);
         });
     },

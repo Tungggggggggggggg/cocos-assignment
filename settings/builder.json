@@ -1,6 +1,7 @@
 {
   "excludeScenes": [
-    "79106971-a28c-481e-8d96-563aa20a9a7d"
+    "79106971-a28c-481e-8d96-563aa20a9a7d",
+    "1286c4b9-7066-42d4-9b51-8d7f2e8205c5"
   ],
   "orientation": {
     "landscapeLeft": true,
@@ -9,8 +10,8 @@
     "upsideDown": false
   },
   "packageName": "org.cocos2d.helloworld",
-  "startScene": "1286c4b9-7066-42d4-9b51-8d7f2e8205c5",
-  "title": "hello_world",
+  "startScene": "fc0e8568-8871-4097-8dbb-a39625d712d0",
+  "title": "heheh",
   "webOrientation": "auto",
   "inlineSpriteFrames": false,
   "inlineSpriteFrames_native": true,
