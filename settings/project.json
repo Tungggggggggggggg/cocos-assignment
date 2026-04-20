@@ -1,12 +1,26 @@
 {
   "collision-matrix": [
     [
+      false,
+      null,
+      false
+    ],
+    [
+      false,
+      false,
       true
+    ],
+    [
+      false,
+      true,
+      false
     ]
   ],
   "excluded-modules": [],
   "group-list": [
-    "default"
+    "CHARACTER",
+    "HUNTER",
+    "BULLET"
   ],
   "design-resolution-width": 1560,
   "design-resolution-height": 720,
