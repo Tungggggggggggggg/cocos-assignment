@@ -15,26 +15,20 @@ cc.Class({
 
         this.startListening();
 
-        instance.registerEvent(
-            "CMD_STOP_LISTEN",
-            this.stopListening.bind(this),
-        );
-        instance.registerEvent(
-            "CMD_START_LISTEN",
-            this.startListening.bind(this),
-        );
+        instance.registerEvent("STOP_LISTEN", this.stopListening.bind(this));
+        instance.registerEvent("START_LISTEN", this.startListening.bind(this));
     },
 
     startListening() {
-        instance.registerEvent("EVT_TWEEN", this._callbackTween);
-        instance.registerEvent("EVT_ACTION", this._callbackAction);
-        instance.registerEvent("EVT_TIMELINE", this._callbackTimeline);
+        instance.registerEvent("TWEEN", this._callbackTween);
+        instance.registerEvent("ACTION", this._callbackAction);
+        instance.registerEvent("TIMELINE", this._callbackTimeline);
     },
 
     stopListening() {
-        instance.removeEvent("EVT_TWEEN", this._callbackTween);
-        instance.removeEvent("EVT_ACTION", this._callbackAction);
-        instance.removeEvent("EVT_TIMELINE", this._callbackTimeline);
+        instance.removeEvent("TWEEN", this._callbackTween);
+        instance.removeEvent("ACTION", this._callbackAction);
+        instance.removeEvent("TIMELINE", this._callbackTimeline);
     },
 
     onBtnTween() {

@@ -13,14 +13,8 @@ cc.Class({
         this._callbackPlay = this.playAnimation.bind(this);
         this.startListening();
 
-        instance.registerEvent(
-            "CMD_STOP_LISTEN",
-            this.stopListening.bind(this),
-        );
-        instance.registerEvent(
-            "CMD_START_LISTEN",
-            this.startListening.bind(this),
-        );
+        instance.registerEvent("STOP_LISTEN", this.stopListening.bind(this));
+        instance.registerEvent("START_LISTEN", this.startListening.bind(this));
     },
 
     startListening() {
