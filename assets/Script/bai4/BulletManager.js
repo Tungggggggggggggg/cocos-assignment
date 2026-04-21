@@ -1,45 +1,35 @@
-// assets/scripts/managers/BulletManager.js
-const GameConfig = require("GameConfig");
+import { BULLET_DATA } from "GameConfig";
 
 cc.Class({
     extends: cc.Component,
 
-    properties: {
-        bulletPrefab: cc.Prefab,
-    },
+    properties: { bulletPrefab: cc.Prefab },
 
-    // Thay đổi từ cc.exports.BulletManager = this;
     onLoad() {
-        cc.BulletManager = this; // Gán trực tiếp vào cc
-        this._bulletPool = new cc.NodePool();
-        this.node.on("bullet-hit-creep", this.handleBulletHit, this);
+        cc.BulletManager = this;
+        this._pool = new cc.NodePool();
+        this.node.on(
+            "bullet-hit-creep",
+            ({ creep, damage }) => creep?.takeDamage(damage),
+            this,
+        );
     },
 
     spawnBullet(pos) {
-        let bullet =
-            this._bulletPool.size() > 0
-                ? this._bulletPool.get()
+        const bullet =
+            this._pool.size() > 0
+                ? this._pool.get()
                 : cc.instantiate(this.bulletPrefab);
         bullet.parent = this.node;
         bullet.setPosition(pos);
-
-        // Random 1 trong 5 loại đạn
-        const randomIdx = Math.floor(
-            Math.random() * GameConfig.BULLET_DATA.length,
-        );
-        const config = GameConfig.BULLET_DATA[randomIdx];
-
+        const config =
+            BULLET_DATA[
+                Math.floor(Math.random() * BULLET_DATA.length)
+            ];
         bullet.getComponent("BulletItem").init(config);
     },
 
-    handleBulletHit(data) {
-        // data.creep là component CreepItem của con quái bị trúng
-        if (data.creep) {
-            data.creep.takeDamage(data.damage);
-        }
-    },
-
-    recycleBullet(bulletNode) {
-        this._bulletPool.put(bulletNode);
+    recycleBullet(node) {
+        this._pool.put(node);
     },
 });

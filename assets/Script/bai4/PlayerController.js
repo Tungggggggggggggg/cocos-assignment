@@ -1,17 +1,22 @@
-// assets/scripts/controllers/PlayerController.js
-const GameConfig = require("GameConfig");
+import { PLAYER_LIMIT, PLAYER_SPEED } from "GameConfig";
+
+const KEY_DIR = {
+    [cc.macro.KEY.w]: { axis: "y", val: 1 },
+    [cc.macro.KEY.s]: { axis: "y", val: -1 },
+    [cc.macro.KEY.a]: { axis: "x", val: -1 },
+    [cc.macro.KEY.d]: { axis: "x", val: 1 },
+};
 
 cc.Class({
     extends: cc.Component,
 
     properties: {
-        posFire: cc.Node, // Điểm đầu súng (local node của Player)
-        bulletLayer: cc.Node, // Tham chiếu đến Layer quản lý đạn
+        posFire: cc.Node,
+        bulletLayer: cc.Node,
     },
 
     onLoad() {
         this._moveDir = cc.v2(0, 0);
-        // Đăng ký sự kiện bàn phím [cite: 2616, 2634]
         cc.systemEvent.on(
             cc.SystemEvent.EventType.KEY_DOWN,
             this.onKeyDown,
@@ -20,69 +25,6 @@ cc.Class({
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
     },
 
-    update(dt) {
-        this.handleMovement(dt); // Chạy logic di chuyển mỗi frame [cite: 1608, 1664]
-    },
-
-    handleMovement(dt) {
-        if (this._moveDir.mag() === 0) return;
-
-        let nextPos = this.node
-            .getPosition()
-            .add(this._moveDir.mul(GameConfig.PLAYER_SPEED * dt));
-
-        // Giới hạn nhân vật di chuyển trong vùng nhất định
-        const limit = GameConfig.PLAYER_LIMIT;
-        nextPos.x = cc.misc.clampf(nextPos.x, limit.minX, limit.maxX);
-        nextPos.y = cc.misc.clampf(nextPos.y, limit.minY, limit.maxY);
-
-        this.node.setPosition(nextPos);
-    },
-
-    onKeyDown(event) {
-        switch (event.keyCode) {
-            case cc.macro.KEY.w:
-                this._moveDir.y = 1;
-                break;
-            case cc.macro.KEY.s:
-                this._moveDir.y = -1;
-                break;
-            case cc.macro.KEY.a:
-                this._moveDir.x = -1;
-                break;
-            case cc.macro.KEY.d:
-                this._moveDir.x = 1;
-                break;
-            case cc.macro.KEY.space:
-                this.fire();
-                break; // Nút bắn
-        }
-    },
-
-    onKeyUp(event) {
-        switch (event.keyCode) {
-            case cc.macro.KEY.w:
-            case cc.macro.KEY.s:
-                this._moveDir.y = 0;
-                break;
-            case cc.macro.KEY.a:
-            case cc.macro.KEY.d:
-                this._moveDir.x = 0;
-                break;
-        }
-    },
-fire() {
-    const posFire = this.bulletLayer.convertToNodeSpaceAR(this.posFire.convertToWorldSpaceAR(cc.v2(0, 0)));
-    
-    // Thay đổi từ cc.exports.BulletManager thành cc.BulletManager
-    if (cc.BulletManager) {
-        cc.BulletManager.spawnBullet(posFire);
-    }
-
-    const anim = this.getComponent(cc.Animation);
-    if (anim) anim.play("shoot"); // Đã sửa thành "shoot" theo animation Spine
-},
-
     onDestroy() {
         cc.systemEvent.off(
             cc.SystemEvent.EventType.KEY_DOWN,
@@ -90,5 +32,37 @@ fire() {
             this,
         );
         cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+    },
+
+    update(dt) {
+        if (this._moveDir.mag() === 0) return;
+        const { minX, maxX, minY, maxY } = PLAYER_LIMIT;
+        const next = this.node
+            .getPosition()
+            .add(this._moveDir.mul(PLAYER_SPEED * dt));
+        next.x = cc.misc.clampf(next.x, minX, maxX);
+        next.y = cc.misc.clampf(next.y, minY, maxY);
+        this.node.setPosition(next);
+    },
+
+    onKeyDown(e) {
+        const k = KEY_DIR[e.keyCode];
+        if (k) this._moveDir[k.axis] = k.val;
+        else if (e.keyCode === cc.macro.KEY.space) this.fire();
+    },
+
+    onKeyUp(e) {
+        const k = KEY_DIR[e.keyCode];
+        if (k) this._moveDir[k.axis] = 0;
+    },
+
+    fire() {
+        if (cc.BulletManager) {
+            const pos = this.bulletLayer.convertToNodeSpaceAR(
+                this.posFire.convertToWorldSpaceAR(cc.v2(0, 0)),
+            );
+            cc.BulletManager.spawnBullet(pos);
+        }
+        this.getComponent(cc.Animation)?.play("shoot");
     },
 });
