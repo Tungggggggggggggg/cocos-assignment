@@ -4,7 +4,6 @@ cc.Class({
     init({ speed, damage }) {
         this._speed = speed;
         this._damage = damage;
-        this._active = true;
     },
 
     update(dt) {
@@ -16,7 +15,7 @@ cc.Class({
     },
 
     onCollisionEnter(other) {
-        const creep = other.node.getComponent("CreepItem");
+        const creep = other.node.getComponent("HunterController");
         if (creep) {
             this.node.parent.emit("bullet-hit-creep", {
                 creep,
@@ -27,7 +26,6 @@ cc.Class({
     },
 
     recycle() {
-        this._active = false;
         cc.BulletManager?.recycleBullet(this.node);
     },
 });

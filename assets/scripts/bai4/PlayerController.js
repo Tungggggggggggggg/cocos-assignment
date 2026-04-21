@@ -17,14 +17,14 @@ cc.Class({
 
     onLoad() {
         this._moveDir = cc.v2(0, 0);
+        this._spine = this.getComponent(sp.Skeleton);
         const hw = cc.winSize.width / 2;
         const hh = cc.winSize.height / 2;
-        const padding = 50;
         this._limit = {
-            minX: -hw + padding,
-            maxX: hw - padding - 1250,
-            minY: -hh + padding,
-            maxY: hh - padding - 150,
+            minX: -hw + GameConfig.PADDING,
+            maxX: hw - GameConfig.PADDING - 1250,
+            minY: -hh + GameConfig.PADDING,
+            maxY: hh - GameConfig.PADDING - 150,
         };
         cc.systemEvent.on(
             cc.SystemEvent.EventType.KEY_DOWN,
@@ -71,14 +71,13 @@ cc.Class({
 
     fire() {
         if (cc.BulletManager) {
-            const pos = this.bulletLayer.convertToNodeSpaceAR(
-                this.posFire.convertToWorldSpaceAR(cc.v2(0, 0)),
-            );
+            const worldPos = this.posFire.convertToWorldSpaceAR(cc.v2());
+            const pos = this.bulletLayer.convertToNodeSpaceAR(worldPos);
             cc.BulletManager.spawnBullet(pos);
         }
-        const spine = this.getComponent(sp.Skeleton);
-        if (spine) {
-            spine.setAnimation(0, "shoot", false);
+        if (this._spine) {
+            this._spine.setAnimation(0, "shoot", false);
+            this._spine.addAnimation(0, "idle", true);
         }
     },
 });

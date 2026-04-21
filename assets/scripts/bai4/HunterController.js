@@ -3,7 +3,7 @@ const GameConfig = require("GameConfig");
 cc.Class({
     extends: cc.Component,
 
-    properties: { manaBar: cc.ProgressBar },
+    properties: { healthBar: cc.ProgressBar },
 
     onLoad() {
         this._startY = this.node.y;
@@ -22,10 +22,10 @@ cc.Class({
 
     takeDamage(amount) {
         this._health = Math.max(0, this._health - amount);
-        if (this.manaBar) {
-            this.manaBar.progress = this._health / GameConfig.CREEP_MAX_HEALTH;
+        if (this.healthBar) {
+            this.healthBar.progress = this._health / GameConfig.CREEP_MAX_HEALTH;
         }
-        if (this._health === 0) {
+        if (this._health <= 0) {
             this.node.destroy();
         }
     },
