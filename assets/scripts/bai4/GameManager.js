@@ -3,6 +3,6 @@ cc.Class({
     onLoad() {
         const mgr = cc.director.getCollisionManager();
         mgr.enabled = true;
-        mgr.enabledDebugDraw = true;
+        mgr.enabledDebugDraw = false;
     },
 });

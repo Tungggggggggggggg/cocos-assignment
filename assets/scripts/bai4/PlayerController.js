@@ -1,4 +1,4 @@
-import { PLAYER_LIMIT, PLAYER_SPEED } from "GameConfig";
+const GameConfig = require("GameConfig");
 
 const KEY_DIR = {
     [cc.macro.KEY.w]: { axis: "y", val: 1 },
@@ -17,6 +17,15 @@ cc.Class({
 
     onLoad() {
         this._moveDir = cc.v2(0, 0);
+        const hw = cc.winSize.width / 2;
+        const hh = cc.winSize.height / 2;
+        const padding = 50;
+        this._limit = {
+            minX: -hw + padding,
+            maxX: hw - padding - 1250,
+            minY: -hh + padding,
+            maxY: hh - padding - 150,
+        };
         cc.systemEvent.on(
             cc.SystemEvent.EventType.KEY_DOWN,
             this.onKeyDown,
@@ -35,11 +44,10 @@ cc.Class({
     },
 
     update(dt) {
-        if (this._moveDir.mag() === 0) return;
-        const { minX, maxX, minY, maxY } = PLAYER_LIMIT;
+        const { minX, maxX, minY, maxY } = this._limit;
         const next = this.node
             .getPosition()
-            .add(this._moveDir.mul(PLAYER_SPEED * dt));
+            .add(this._moveDir.mul(GameConfig.PLAYER_SPEED * dt));
         next.x = cc.misc.clampf(next.x, minX, maxX);
         next.y = cc.misc.clampf(next.y, minY, maxY);
         this.node.setPosition(next);
@@ -47,13 +55,18 @@ cc.Class({
 
     onKeyDown(e) {
         const k = KEY_DIR[e.keyCode];
-        if (k) this._moveDir[k.axis] = k.val;
-        else if (e.keyCode === cc.macro.KEY.space) this.fire();
+        if (k) {
+            this._moveDir[k.axis] = k.val;
+        } else if (e.keyCode === cc.macro.KEY.space) {
+            this.fire();
+        }
     },
 
     onKeyUp(e) {
         const k = KEY_DIR[e.keyCode];
-        if (k) this._moveDir[k.axis] = 0;
+        if (k) {
+            this._moveDir[k.axis] = 0;
+        }
     },
 
     fire() {
@@ -63,6 +76,9 @@ cc.Class({
             );
             cc.BulletManager.spawnBullet(pos);
         }
-        this.getComponent(cc.Animation)?.play("shoot");
+        const spine = this.getComponent(sp.Skeleton);
+        if (spine) {
+            spine.setAnimation(0, "shoot", false);
+        }
     },
 });
