@@ -11,8 +11,8 @@ cc.Class({
         cc.BulletManager = this;
         this._pools = this.bulletPrefabs.map(() => new cc.NodePool());
         this.node.on(
-            "bullet-hit-creep",
-            ({ creep, damage }) => creep?.takeDamage(damage),
+            "bullet-hit-hunter",
+            ({ hunter, damage }) => hunter?.takeDamage(damage),
             this,
         );
     },

@@ -15,10 +15,10 @@ cc.Class({
     },
 
     onCollisionEnter(other) {
-        const creep = other.node.getComponent("HunterController");
-        if (creep) {
-            this.node.parent.emit("bullet-hit-creep", {
-                creep,
+        const hunter = other.node.getComponent("HunterController");
+        if (hunter) {
+            this.node.parent.emit("bullet-hit-hunter", {
+                hunter,
                 damage: this._damage,
             });
         }
