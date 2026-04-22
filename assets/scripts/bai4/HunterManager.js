@@ -9,7 +9,7 @@ cc.Class({
 
     onLoad() {
         cc.HunterManager = this;
-        this._hunterPool = new cc.NodePool();
+        // this._hunterPool = new cc.NodePool();
     },
 
     // spawnHunter(pos) {
