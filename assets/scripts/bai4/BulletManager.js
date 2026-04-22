@@ -18,7 +18,7 @@ cc.Class({
     },
 
     spawnBullet(pos) {
-        const idx = Math.floor(Math.random() * this.bulletPrefabs.length);
+        const idx = Math.floor(Math.random() * GameConfig.BULLET_DATA.length);
         const config = GameConfig.BULLET_DATA[idx];
         const pool = this._pools[idx];
 

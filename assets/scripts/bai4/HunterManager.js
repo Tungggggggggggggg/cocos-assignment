@@ -12,25 +12,25 @@ cc.Class({
         this._hunterPool = new cc.NodePool();
     },
 
-    spawnHunter(pos) {
-        let hunter = null;
-        if (this._hunterPool.size() > 0) {
-            hunter = this._hunterPool.get();
-        } else {
-            hunter = cc.instantiate(this.hunterPrefab);
-        }
+    // spawnHunter(pos) {
+    //     let hunter = null;
+    //     if (this._hunterPool.size() > 0) {
+    //         hunter = this._hunterPool.get();
+    //     } else {
+    //         hunter = cc.instantiate(this.hunterPrefab);
+    //     }
 
-        hunter.parent = this.node;
-        hunter.setPosition(pos);
+    //     hunter.parent = this.node;
+    //     hunter.setPosition(pos);
 
-        const controller = hunter.getComponent("HunterController");
-        if (controller && controller.init) {
-            controller.init();
-        }
-    },
+    //     const controller = hunter.getComponent("HunterController");
+    //     if (controller && controller.init) {
+    //         controller.init();
+    //     }
+    // },
 
-    recycleHunter(hunterNode) {
-        this._hunterPool.put(hunterNode);
-    },
+    // recycleHunter(hunterNode) {
+    //     this._hunterPool.put(hunterNode);
+    // },
 
 });

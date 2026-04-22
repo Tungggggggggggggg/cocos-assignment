@@ -22,9 +22,9 @@ cc.Class({
         const hh = cc.winSize.height / 2;
         this._limit = {
             minX: -hw + GameConfig.PADDING,
-            maxX: hw - GameConfig.PADDING - 1250,
+            maxX: hw - GameConfig.MAP_LIMIT_OFFSET_X,
             minY: -hh + GameConfig.PADDING,
-            maxY: hh - GameConfig.PADDING - 150,
+            maxY: hh - GameConfig.MAP_LIMIT_OFFSET_Y,
         };
         cc.systemEvent.on(
             cc.SystemEvent.EventType.KEY_DOWN,

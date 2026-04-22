@@ -9,10 +9,10 @@ cc.Class({
         cc.CharacterManager = this;
     },
 
-    spawnPlayer(pos) {
-        const player = cc.instantiate(this.playerPrefab);
-        player.parent = this.node;
-        player.setPosition(pos);
-        return player;
-    }
+    // spawnPlayer(pos) {
+    //     const player = cc.instantiate(this.playerPrefab);
+    //     player.parent = this.node;
+    //     player.setPosition(pos);
+    //     return player;
+    // }
 });

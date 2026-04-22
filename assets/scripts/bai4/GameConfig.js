@@ -3,8 +3,9 @@ const GameConfig = {
     CREEP_MOVE_RANGE: 200,
     CREEP_SPEED: 150,
     CREEP_MAX_HEALTH: 100,
+    MAP_LIMIT_OFFSET_X: 1300,
+    MAP_LIMIT_OFFSET_Y: 200,
     PADDING: 50,
-
     BULLET_DATA: [
         { speed: 1200, damage: 5 },
         { speed: 700, damage: 10 },
