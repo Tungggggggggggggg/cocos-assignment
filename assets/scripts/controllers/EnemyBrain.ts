@@ -1,9 +1,10 @@
 import { _decorator, Component, Vec3 } from "cc";
 import { Health } from "../components/Health";
 import { AutoMovement } from "../components/AutoMovement";
+import { HealthBar } from "../components/HealthBar";
 import { EventManager } from "../managers/EventManager";
 import { EventName, GameConfig } from "../configs/GameConfig";
-import { HealthBar } from "../components/HealthBar";
+
 const { ccclass, property, requireComponent } = _decorator;
 
 @ccclass("EnemyBrain")
@@ -16,61 +17,45 @@ export class EnemyBrain extends Component {
     private _health: Health = null;
     private _movement: AutoMovement = null;
 
-    // onLoad() {
-    //     this._health = this.getComponent(Health);
-    //     this._movement = this.getComponent(AutoMovement);
-    // }
+    onLoad() {
+        this._health = this.getComponent(Health);
+        this._movement = this.getComponent(AutoMovement);
+
+        if (!this._health || !this._movement) {
+            console.error("[EnemyBrain] Prefab thiếu component Health hoặc AutoMovement!");
+        }
+    }
 
     onEnable() {
-        this.node.on("health-changed", this.onHealthChanged, this);
-        this.node.on("died", this.onDied, this);
-        this.node.on("out-of-bounds", this.onOutOfBounds, this);
+        this.node.on("health-changed", this._onHealthChanged, this);
+        this.node.on("died", this._onDied, this);
+        this.node.on("out-of-bounds", this._onOutOfBounds, this);
     }
 
     onDisable() {
-        this.node.off("health-changed", this.onHealthChanged, this);
-        this.node.off("died", this.onDied, this);
-        this.node.off("out-of-bounds", this.onOutOfBounds, this);
+        this.node.off("health-changed", this._onHealthChanged, this);
+        this.node.off("died", this._onDied, this);
+        this.node.off("out-of-bounds", this._onOutOfBounds, this);
     }
 
-    public spawn(startPos: Vec3, speed: number) {
-        if (!this._health) this._health = this.getComponent(Health);
-        if (!this._movement) this._movement = this.getComponent(AutoMovement);
-
-        if (!this._health || !this._movement) {
-            console.error(
-                "[EnemyBrain] CRITICAL: Prefab bị hỏng! Không có Health hoặc AutoMovement.",
-            );
-            return;
-        }
-
+    public spawn(startPos: Vec3, speed: number): void {
         this.node.setPosition(startPos);
-
         this._health.init(GameConfig.ENEMY.MAX_HEALTH);
         this._movement.init(speed, new Vec3(-1, 0, 0));
-
-        if (this.healthBar)
-            this.healthBar.updateHealth(
-                GameConfig.ENEMY.MAX_HEALTH,
-                GameConfig.ENEMY.MAX_HEALTH,
-            );
+        this.healthBar?.updateHealth(GameConfig.ENEMY.MAX_HEALTH, GameConfig.ENEMY.MAX_HEALTH);
     }
 
-    private onHealthChanged(currentHp: number, maxHp: number) {
-        if (this.healthBar) this.healthBar.updateHealth(currentHp, maxHp);
+    private _onHealthChanged(currentHp: number, maxHp: number): void {
+        this.healthBar?.updateHealth(currentHp, maxHp);
     }
 
-    private onDied() {
-        if (this._movement) this._movement.stop();
+    private _onDied(): void {
+        this._movement.stop();
         EventManager.emit(EventName.ADD_SCORE, 10);
-        this.playDeathAnimation();
-    }
-
-    private playDeathAnimation() {
         EventManager.emit(EventName.RETURN_ENEMY, this.node);
     }
 
-    private onOutOfBounds() {
+    private _onOutOfBounds(): void {
         EventManager.emit(EventName.RETURN_ENEMY, this.node);
     }
 }

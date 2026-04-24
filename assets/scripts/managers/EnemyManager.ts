@@ -7,10 +7,12 @@ import {
     instantiate,
     Vec3,
     view,
+    math,
 } from "cc";
 import { EnemyBrain } from "../controllers/EnemyBrain";
 import { EventManager } from "./EventManager";
 import { EventName, GameConfig } from "../configs/GameConfig";
+
 const { ccclass, property } = _decorator;
 
 @ccclass("EnemyManager")
@@ -21,63 +23,59 @@ export class EnemyManager extends Component {
     @property(Node)
     private enemyContainer: Node = null;
 
-    private _enemyPool: NodePool = new NodePool();
+    private _enemyPool: NodePool = new NodePool("recycle");
     private _isSpawning: boolean = false;
 
     onEnable() {
-        EventManager.on(EventName.GAME_START, this.startGame, this);
-        EventManager.on(EventName.GAME_OVER, this.stopGame, this);
-        EventManager.on(EventName.RETURN_ENEMY, this.onReturnEnemy, this);
+        EventManager.on(EventName.GAME_START, this._startGame, this);
+        EventManager.on(EventName.GAME_OVER, this._stopGame, this);
+        EventManager.on(EventName.RETURN_ENEMY, this._onReturnEnemy, this);
     }
 
     onDisable() {
-        EventManager.off(EventName.GAME_START, this.startGame, this);
-        EventManager.off(EventName.GAME_OVER, this.stopGame, this);
-        EventManager.off(EventName.RETURN_ENEMY, this.onReturnEnemy, this);
+        EventManager.off(EventName.GAME_START, this._startGame, this);
+        EventManager.off(EventName.GAME_OVER, this._stopGame, this);
+        EventManager.off(EventName.RETURN_ENEMY, this._onReturnEnemy, this);
     }
 
-    start() {
-        this.startGame();
+    onDestroy() {
+        this._stopGame();
+        this._enemyPool.clear();
     }
 
-    private startGame() {
+    private _startGame(): void {
         if (this._isSpawning) return;
         this._isSpawning = true;
-        this.schedule(this.spawnEnemy, GameConfig.ENEMY.SPAWN_INTERVAL);
+        this.schedule(this._spawnEnemy, GameConfig.ENEMY.SPAWN_INTERVAL);
     }
 
-    private stopGame() {
+    private _stopGame(): void {
         this._isSpawning = false;
-        this.unschedule(this.spawnEnemy);
+        this.unschedule(this._spawnEnemy);
     }
 
-    private spawnEnemy() {
-        if (!this._isSpawning || !this.enemyPrefab || !this.enemyContainer)
-            return;
+    private _spawnEnemy(): void {
+        if (!this._isSpawning || !this.enemyPrefab || !this.enemyContainer) return;
 
-        const enemyNode =
-            this._enemyPool.size() > 0
-                ? this._enemyPool.get()
-                : instantiate(this.enemyPrefab);
+        const enemyNode = this._enemyPool.size() > 0
+            ? this._enemyPool.get()
+            : instantiate(this.enemyPrefab);
+
         this.enemyContainer.addChild(enemyNode);
 
         const visibleSize = view.getVisibleSize();
         const spawnX = visibleSize.width / 2 + 100;
-        const spawnY = (Math.random() - 0.5) * (visibleSize.height - 200);
+        const spawnY = math.randomRange(
+            -(visibleSize.height / 2 - 100),
+             (visibleSize.height / 2 - 100),
+        );
 
-        const enemyBrain = enemyNode.getComponent(EnemyBrain);
-        if (enemyBrain) {
-            const minSpeed = GameConfig.ENEMY.SPEED_MIN;
-            const maxSpeed = GameConfig.ENEMY.SPEED_MAX;
-            const randomSpeed =
-                minSpeed + Math.random() * (maxSpeed - minSpeed);
-
-            enemyBrain.spawn(new Vec3(spawnX, spawnY, 0), randomSpeed);
-        }
+        const speed = math.randomRange(GameConfig.ENEMY.SPEED_MIN, GameConfig.ENEMY.SPEED_MAX);
+        enemyNode.getComponent(EnemyBrain)?.spawn(new Vec3(spawnX, spawnY, 0), speed);
     }
 
-    private onReturnEnemy(enemyNode: Node) {
-        if (enemyNode && enemyNode.isValid) {
+    private _onReturnEnemy(enemyNode: Node): void {
+        if (enemyNode?.isValid) {
             this._enemyPool.put(enemyNode);
         }
     }

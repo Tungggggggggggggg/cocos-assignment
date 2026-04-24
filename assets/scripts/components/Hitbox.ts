@@ -3,9 +3,11 @@ import {
     Component,
     Collider2D,
     Contact2DType,
+    IPhysics2DContact,
 } from "cc";
 import { Bullet } from "./Bullet";
 import { Health } from "./Health";
+
 const { ccclass, requireComponent } = _decorator;
 
 @ccclass("Hitbox")
@@ -20,28 +22,19 @@ export class Hitbox extends Component {
     }
 
     onEnable() {
-        if (this._collider) {
-            this._collider.on(
-                Contact2DType.BEGIN_CONTACT,
-                this.onBeginContact,
-                this,
-            );
-        }
+        this._collider?.on(Contact2DType.BEGIN_CONTACT, this._onBeginContact, this);
     }
 
     onDisable() {
-        if (this._collider) {
-            this._collider.off(
-                Contact2DType.BEGIN_CONTACT,
-                this.onBeginContact,
-                this,
-            );
-        }
+        this._collider?.off(Contact2DType.BEGIN_CONTACT, this._onBeginContact, this);
     }
 
-    private onBeginContact(other: Collider2D) {
-        const bullet = other.node.getComponent(Bullet);
-
+    private _onBeginContact(
+        selfCollider: Collider2D,
+        otherCollider: Collider2D,
+        _contact: IPhysics2DContact | null,
+    ): void {
+        const bullet = otherCollider.node.getComponent(Bullet);
         if (bullet && this._health) {
             this._health.takeDamage(bullet.damage);
             bullet.recycle();

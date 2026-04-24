@@ -10,18 +10,21 @@ export const GameConfig = {
         SPEED_MAX: 250,
         MAX_HEALTH: 100,
         DESPAWN_X: -1200,
+        SCORE_VALUE: 10,
     },
     BULLET: {
         SPEED: 800,
         DAMAGE: 20,
     },
-};
+} as const;
 
 export const EventName = {
-    GAME_START: "game-start",
-    GAME_OVER: "game-over",
-    ADD_SCORE: "add-score",
-    ENTITY_DIED: "entity-died",
-    RETURN_BULLET: "return-bullet",
-    RETURN_ENEMY: "return-enemy",
-};
+    GAME_START:     "game-start",
+    GAME_OVER:      "game-over",
+    ADD_SCORE:      "add-score",
+    ENTITY_DIED:    "entity-died",
+    RETURN_BULLET:  "return-bullet",
+    RETURN_ENEMY:   "return-enemy",
+} as const;
+
+export type EventNameType = typeof EventName[keyof typeof EventName];
