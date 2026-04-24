@@ -149,7 +149,7 @@
     "__prefab": {
       "__id__": 7
     },
-    "damage": 20,
+    "baseDamage": 20,
     "_id": ""
   },
   {

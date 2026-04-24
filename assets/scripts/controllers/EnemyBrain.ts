@@ -16,10 +16,10 @@ export class EnemyBrain extends Component {
     private _health: Health = null;
     private _movement: AutoMovement = null;
 
-    onLoad() {
-        this._health = this.getComponent(Health);
-        this._movement = this.getComponent(AutoMovement);
-    }
+    // onLoad() {
+    //     this._health = this.getComponent(Health);
+    //     this._movement = this.getComponent(AutoMovement);
+    // }
 
     onEnable() {
         this.node.on("health-changed", this.onHealthChanged, this);
@@ -34,6 +34,16 @@ export class EnemyBrain extends Component {
     }
 
     public spawn(startPos: Vec3, speed: number) {
+        if (!this._health) this._health = this.getComponent(Health);
+        if (!this._movement) this._movement = this.getComponent(AutoMovement);
+
+        if (!this._health || !this._movement) {
+            console.error(
+                "[EnemyBrain] CRITICAL: Prefab bị hỏng! Không có Health hoặc AutoMovement.",
+            );
+            return;
+        }
+
         this.node.setPosition(startPos);
 
         this._health.init(GameConfig.ENEMY.MAX_HEALTH);
@@ -51,7 +61,7 @@ export class EnemyBrain extends Component {
     }
 
     private onDied() {
-        this._movement.stop();
+        if (this._movement) this._movement.stop();
         EventManager.emit(EventName.ADD_SCORE, 10);
         this.playDeathAnimation();
     }

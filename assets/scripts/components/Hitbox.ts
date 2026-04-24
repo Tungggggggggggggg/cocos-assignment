@@ -3,7 +3,6 @@ import {
     Component,
     Collider2D,
     Contact2DType,
-    IPhysics2DContact,
 } from "cc";
 import { Bullet } from "./Bullet";
 import { Health } from "./Health";

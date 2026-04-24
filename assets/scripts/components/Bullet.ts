@@ -1,11 +1,11 @@
-import { _decorator, Component, Vec3, view } from "cc";
+import { _decorator, Component, Vec3, view, CCInteger } from "cc";
 import { GameConfig, EventName } from "../configs/GameConfig";
 import { EventManager } from "../managers/EventManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("Bullet")
 export class Bullet extends Component {
-    @property(Number)
+    @property(CCInteger)
     private baseDamage: number = GameConfig.BULLET.DAMAGE;
 
     private _direction: Vec3 = new Vec3(1, 0, 0);
