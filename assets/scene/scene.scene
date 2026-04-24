@@ -185,7 +185,7 @@
     "_priority": 0,
     "_fov": 45,
     "_fovAxis": 0,
-    "_orthoHeight": 581.5287958115183,
+    "_orthoHeight": 434.8984198645598,
     "_near": 0,
     "_far": 1000,
     "_color": {
@@ -557,11 +557,6 @@
     "__type__": "25fbfuE8i9CF6oVsk7cVZyJ",
     "_name": "",
     "_objFlags": 0,
-    "__editorExtras__": {
-      "mountedRoot": {
-        "__id__": 9
-      }
-    },
     "node": {
       "__id__": 9
     },
@@ -1984,9 +1979,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "lobbyNode": {
-      "__id__": 34
-    },
+    "lobbyLayer": null,
     "gameLayer": {
       "__id__": 5
     },
@@ -2649,7 +2642,6 @@
     "enemyContainer": {
       "__id__": 29
     },
-    "spawnInterval": 2,
     "_id": "21uYNYhkVLv5MKtcW4lahX"
   },
   {

@@ -8,57 +8,77 @@ import {
     Vec3,
     view,
 } from "cc";
+import { EnemyBrain } from "../controllers/EnemyBrain";
+import { EventManager } from "./EventManager";
+import { EventName, GameConfig } from "../configs/GameConfig";
 const { ccclass, property } = _decorator;
 
 @ccclass("EnemyManager")
 export class EnemyManager extends Component {
-    public static instance: EnemyManager = null;
-
     @property(Prefab)
     private enemyPrefab: Prefab = null;
 
     @property(Node)
     private enemyContainer: Node = null;
 
-    @property(Number)
-    private spawnInterval: number = 2;
-
     private _enemyPool: NodePool = new NodePool();
+    private _isSpawning: boolean = false;
 
-    onLoad() {
-        EnemyManager.instance = this;
+    onEnable() {
+        EventManager.on(EventName.GAME_START, this.startGame, this);
+        EventManager.on(EventName.GAME_OVER, this.stopGame, this);
+        EventManager.on(EventName.RETURN_ENEMY, this.onReturnEnemy, this);
+    }
+
+    onDisable() {
+        EventManager.off(EventName.GAME_START, this.startGame, this);
+        EventManager.off(EventName.GAME_OVER, this.stopGame, this);
+        EventManager.off(EventName.RETURN_ENEMY, this.onReturnEnemy, this);
     }
 
     start() {
-        this.schedule(this.spawnEnemy, this.spawnInterval);
+        this.startGame();
+    }
+
+    private startGame() {
+        if (this._isSpawning) return;
+        this._isSpawning = true;
+        this.schedule(this.spawnEnemy, GameConfig.ENEMY.SPAWN_INTERVAL);
+    }
+
+    private stopGame() {
+        this._isSpawning = false;
+        this.unschedule(this.spawnEnemy);
     }
 
     private spawnEnemy() {
-        if (!this.enemyPrefab || !this.enemyContainer) return;
+        if (!this._isSpawning || !this.enemyPrefab || !this.enemyContainer)
+            return;
 
-        let enemyNode: Node = null;
-        if (this._enemyPool.size() > 0) {
-            enemyNode = this._enemyPool.get();
-        } else {
-            enemyNode = instantiate(this.enemyPrefab);
-        }
-
+        const enemyNode =
+            this._enemyPool.size() > 0
+                ? this._enemyPool.get()
+                : instantiate(this.enemyPrefab);
         this.enemyContainer.addChild(enemyNode);
 
         const visibleSize = view.getVisibleSize();
-        const spawnX = visibleSize.width / 2 + 500;
+        const spawnX = visibleSize.width / 2 + 100;
         const spawnY = (Math.random() - 0.5) * (visibleSize.height - 200);
 
-        const enemyComp = enemyNode.getComponent("Enemy") as any;
+        const enemyBrain = enemyNode.getComponent(EnemyBrain);
+        if (enemyBrain) {
+            const minSpeed = GameConfig.ENEMY.SPEED_MIN;
+            const maxSpeed = GameConfig.ENEMY.SPEED_MAX;
+            const randomSpeed =
+                minSpeed + Math.random() * (maxSpeed - minSpeed);
 
-        if (enemyComp) {
-            enemyComp.init(
-                new Vec3(spawnX, spawnY, 0),
-                150 + Math.random() * 100,
-            );
+            enemyBrain.spawn(new Vec3(spawnX, spawnY, 0), randomSpeed);
         }
     }
-    public returnEnemy(enemyNode: Node) {
-        this._enemyPool.put(enemyNode);
+
+    private onReturnEnemy(enemyNode: Node) {
+        if (enemyNode && enemyNode.isValid) {
+            this._enemyPool.put(enemyNode);
+        }
     }
 }

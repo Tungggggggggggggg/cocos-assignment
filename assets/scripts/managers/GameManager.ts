@@ -1,37 +1,50 @@
 import { _decorator, Component, Node } from "cc";
+import { EventManager } from "./EventManager";
+import { EventName } from "../configs/GameConfig";
 const { ccclass, property } = _decorator;
 
 @ccclass("GameManager")
 export class GameManager extends Component {
-    public static instance: GameManager = null;
-
     @property(Node)
-    private lobbyNode: Node = null;
+    private lobbyLayer: Node = null;
 
     @property(Node)
     private gameLayer: Node = null;
 
-    onLoad() {
-        if (GameManager.instance === null) {
-            GameManager.instance = this;
-        } else {
-            this.node.destroy();
-            return;
-        }
-        this._initGameState();
+    private _score: number = 0;
+
+    start() {
+        this.initGameState();
     }
 
-    private _initGameState() {
-        if (this.lobbyNode) this.lobbyNode.active = true;
+    onEnable() {
+        EventManager.on(EventName.ADD_SCORE, this.onAddScore, this);
+        EventManager.on(EventName.GAME_OVER, this.onGameOver, this);
+    }
+
+    onDisable() {
+        EventManager.off(EventName.ADD_SCORE, this.onAddScore, this);
+        EventManager.off(EventName.GAME_OVER, this.onGameOver, this);
+    }
+
+    private initGameState() {
+        if (this.lobbyLayer) this.lobbyLayer.active = true;
         if (this.gameLayer) this.gameLayer.active = false;
+        this._score = 0;
     }
 
     public onPlayButtonClick() {
-        if (!this.lobbyNode || !this.gameLayer) {
-            return;
-        }
+        if (this.lobbyLayer) this.lobbyLayer.active = false;
+        if (this.gameLayer) this.gameLayer.active = true;
 
-        this.lobbyNode.active = false;
-        this.gameLayer.active = true;
+        EventManager.emit(EventName.GAME_START);
+    }
+
+    private onAddScore(points: number) {
+        this._score += points;
+    }
+
+    private onGameOver() {
+        this.initGameState();
     }
 }

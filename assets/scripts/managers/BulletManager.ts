@@ -9,6 +9,8 @@ import {
     UITransform,
 } from "cc";
 import { Bullet } from "../components/Bullet";
+import { EventManager } from "./EventManager";
+import { EventName } from "../configs/GameConfig";
 const { ccclass, property } = _decorator;
 
 @ccclass("BulletManager")
@@ -27,22 +29,35 @@ export class BulletManager extends Component {
         BulletManager.instance = this;
     }
 
-    public spawnBullet(worldPos: Vec3, dir: Vec3) {
-        let bulletNode =
-            this._bulletPool.get() || instantiate(this.bulletPrefab);
+    onEnable() {
+        EventManager.on(EventName.RETURN_BULLET, this.onReturnBullet, this);
+    }
 
+    onDisable() {
+        EventManager.off(EventName.RETURN_BULLET, this.onReturnBullet, this);
+    }
+
+    public spawnBullet(worldPos: Vec3, dir: Vec3) {
+        if (!this.bulletPrefab || !this.bulletContainer) return;
+
+        const bulletNode =
+            this._bulletPool.size() > 0
+                ? this._bulletPool.get()
+                : instantiate(this.bulletPrefab);
         this.bulletContainer.addChild(bulletNode);
 
         const uiTransform = this.bulletContainer.getComponent(UITransform);
         const localPos = uiTransform.convertToNodeSpaceAR(worldPos);
 
         const bulletComp = bulletNode.getComponent(Bullet);
-        if(bulletComp){
-            bulletComp.init(localPos, dir, 800);
+        if (bulletComp) {
+            bulletComp.init(localPos, dir);
         }
     }
 
-    public returnBullet(bulletNode: Node) {
-        this._bulletPool.put(bulletNode);
+    private onReturnBullet(bulletNode: Node) {
+        if (bulletNode && bulletNode.isValid) {
+            this._bulletPool.put(bulletNode);
+        }
     }
 }
