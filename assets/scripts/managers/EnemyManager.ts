@@ -18,27 +18,33 @@ const { ccclass, property } = _decorator;
 @ccclass("EnemyManager")
 export class EnemyManager extends Component {
     @property(Prefab)
-    private enemyPrefab: Prefab = null;
+    private readonly enemyPrefab: Prefab | null = null;
 
     @property(Node)
-    private enemyContainer: Node = null;
+    private readonly enemyContainer: Node | null = null;
 
     private _enemyPool: NodePool = new NodePool("recycle");
     private _isSpawning: boolean = false;
 
-    onEnable() {
+    protected onLoad() {
+        if (!this.enemyPrefab || !this.enemyContainer) {
+            throw new Error("[EnemyManager] Missing enemyPrefab or enemyContainer!");
+        }
+    }
+
+    protected onEnable() {
         EventManager.on(EventName.GAME_START, this._startGame, this);
         EventManager.on(EventName.GAME_OVER, this._stopGame, this);
         EventManager.on(EventName.RETURN_ENEMY, this._onReturnEnemy, this);
     }
 
-    onDisable() {
+    protected onDisable() {
         EventManager.off(EventName.GAME_START, this._startGame, this);
         EventManager.off(EventName.GAME_OVER, this._stopGame, this);
         EventManager.off(EventName.RETURN_ENEMY, this._onReturnEnemy, this);
     }
 
-    onDestroy() {
+    protected onDestroy() {
         this._stopGame();
         this._enemyPool.clear();
     }
@@ -64,10 +70,10 @@ export class EnemyManager extends Component {
         this.enemyContainer.addChild(enemyNode);
 
         const visibleSize = view.getVisibleSize();
-        const spawnX = visibleSize.width / 2 + 100;
+        const spawnX = visibleSize.width / 2 + GameConfig.ENEMY.SPAWN_OFFSET;
         const spawnY = math.randomRange(
-            -(visibleSize.height / 2 - 100),
-             (visibleSize.height / 2 - 100),
+            -(visibleSize.height / 2 - GameConfig.ENEMY.SPAWN_OFFSET),
+             (visibleSize.height / 2 - GameConfig.ENEMY.SPAWN_OFFSET),
         );
 
         const speed = math.randomRange(GameConfig.ENEMY.SPEED_MIN, GameConfig.ENEMY.SPEED_MAX);

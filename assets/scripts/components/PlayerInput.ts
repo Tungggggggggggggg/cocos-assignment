@@ -6,12 +6,12 @@ export class PlayerInput extends Component {
     private _moveDir: Vec2 = new Vec2(0, 0);
     private _isAlive: boolean = true;
 
-    onEnable() {
+    protected onEnable() {
         input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
         input.on(Input.EventType.KEY_UP, this.onKeyUp, this);
     }
 
-    onDisable() {
+    protected onDisable() {
         input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this);
         input.off(Input.EventType.KEY_UP, this.onKeyUp, this);
     }

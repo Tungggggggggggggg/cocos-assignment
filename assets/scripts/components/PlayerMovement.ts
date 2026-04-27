@@ -5,18 +5,20 @@ const { ccclass } = _decorator;
 @ccclass("PlayerMovement")
 export class PlayerMovement extends Component {
     private _moveDir: Vec2 = new Vec2(0, 0);
-    private _minBound: Vec3 = new Vec3();
-    private _maxBound: Vec3 = new Vec3();
+    private readonly _minBound: Vec3 = new Vec3();
+    private readonly _maxBound: Vec3 = new Vec3();
+    private readonly _tempPos: Vec3 = new Vec3();
+    private readonly _tempScale: Vec3 = new Vec3();
 
-    start() {
+    protected start() {
         this.calculateBoundaries();
     }
 
-    onEnable() {
+    protected onEnable() {
         this.node.on("input-move", this.onMoveInput, this);
     }
 
-    onDisable() {
+    protected onDisable() {
         this.node.off("input-move", this.onMoveInput, this);
     }
 
@@ -34,7 +36,7 @@ export class PlayerMovement extends Component {
         this._moveDir.set(dir);
     }
 
-    update(dt: number) {
+    protected update(dt: number) {
         if (this._moveDir.x === 0 && this._moveDir.y === 0) return;
 
         const currentPos = this.node.position;
@@ -46,14 +48,16 @@ export class PlayerMovement extends Component {
         newX = math.clamp(newX, this._minBound.x, this._maxBound.x);
         newY = math.clamp(newY, this._minBound.y, this._maxBound.y);
 
-        this.node.setPosition(new Vec3(newX, newY, 0));
+        this._tempPos.set(newX, newY, 0);
+        this.node.setPosition(this._tempPos);
 
         if (this._moveDir.x !== 0) {
             const scaleX =
                 this._moveDir.x > 0
                     ? GameConfig.PLAYER.SCALE
                     : -GameConfig.PLAYER.SCALE;
-            this.node.setScale(new Vec3(scaleX, GameConfig.PLAYER.SCALE, 1));
+            this._tempScale.set(scaleX, GameConfig.PLAYER.SCALE, 1);
+            this.node.setScale(this._tempScale);
         }
     }
 }

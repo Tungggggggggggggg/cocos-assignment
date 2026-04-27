@@ -12,27 +12,27 @@ const { ccclass, property, requireComponent } = _decorator;
 @requireComponent(AutoMovement)
 export class EnemyBrain extends Component {
     @property(HealthBar)
-    private healthBar: HealthBar = null;
+    private readonly healthBar: HealthBar | null = null;
 
     private _health: Health = null;
     private _movement: AutoMovement = null;
 
-    onLoad() {
+    protected onLoad() {
         this._health = this.getComponent(Health);
         this._movement = this.getComponent(AutoMovement);
 
         if (!this._health || !this._movement) {
-            console.error("[EnemyBrain] Prefab thiếu component Health hoặc AutoMovement!");
+            throw new Error("[EnemyBrain] Prefab thiếu component Health hoặc AutoMovement!");
         }
     }
 
-    onEnable() {
+    protected onEnable() {
         this.node.on("health-changed", this._onHealthChanged, this);
         this.node.on("died", this._onDied, this);
         this.node.on("out-of-bounds", this._onOutOfBounds, this);
     }
 
-    onDisable() {
+    protected onDisable() {
         this.node.off("health-changed", this._onHealthChanged, this);
         this.node.off("died", this._onDied, this);
         this.node.off("out-of-bounds", this._onOutOfBounds, this);
@@ -51,7 +51,7 @@ export class EnemyBrain extends Component {
 
     private _onDied(): void {
         this._movement.stop();
-        EventManager.emit(EventName.ADD_SCORE, 10);
+        EventManager.emit(EventName.ADD_SCORE, GameConfig.ENEMY.SCORE_VALUE);
         EventManager.emit(EventName.RETURN_ENEMY, this.node);
     }
 

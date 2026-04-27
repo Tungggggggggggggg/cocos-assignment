@@ -6,19 +6,23 @@ export class PopupManager extends Component {
     public static instance: PopupManager = null;
 
     @property(Node)
-    private popupContainer: Node = null;
+    private readonly popupContainer: Node | null = null;
 
     @property(Prefab)
-    private pfbSettings: Prefab = null;
+    private readonly pfbSettings: Prefab | null = null;
 
     private _settingsNode: Node = null;
 
-    onLoad() {
+    protected onLoad() {
         if (PopupManager.instance === null) {
             PopupManager.instance = this;
         } else {
             this.node.destroy();
             return;
+        }
+
+        if (!this.popupContainer || !this.pfbSettings) {
+            throw new Error("[PopupManager] Missing popupContainer or pfbSettings!");
         }
     }
 

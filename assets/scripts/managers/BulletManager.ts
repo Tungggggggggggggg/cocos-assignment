@@ -19,31 +19,34 @@ export class BulletManager extends Component {
     public static instance: BulletManager | null = null;
 
     @property(Prefab)
-    private bulletPrefab: Prefab = null;
+    private readonly bulletPrefab: Prefab | null = null;
 
     @property(Node)
-    private bulletContainer: Node = null;
+    private readonly bulletContainer: Node | null = null;
 
     private _bulletPool: NodePool = new NodePool("recycle");
 
-    onLoad() {
+    protected onLoad() {
         if (BulletManager.instance !== null) {
-            console.warn("[BulletManager] Phát hiện instance trùng lặp. Hủy node mới.");
             this.node.destroy();
             return;
         }
         BulletManager.instance = this;
+        
+        if (!this.bulletPrefab || !this.bulletContainer) {
+            throw new Error("[BulletManager] Missing bulletPrefab or bulletContainer!");
+        }
     }
 
-    onEnable() {
+    protected onEnable() {
         EventManager.on(EventName.RETURN_BULLET, this._onReturnBullet, this);
     }
 
-    onDisable() {
+    protected onDisable() {
         EventManager.off(EventName.RETURN_BULLET, this._onReturnBullet, this);
     }
 
-    onDestroy() {
+    protected onDestroy() {
         if (BulletManager.instance === this) {
             BulletManager.instance = null;
         }
@@ -52,13 +55,13 @@ export class BulletManager extends Component {
 
     public spawnBullet(worldPos: Vec3, dir: Vec3): void {
         if (!this.bulletPrefab || !this.bulletContainer) {
-            console.warn("[BulletManager] Thiếu bulletPrefab hoặc bulletContainer.");
             return;
         }
 
-        const bulletNode = this._bulletPool.size() > 0
-            ? this._bulletPool.get()
-            : instantiate(this.bulletPrefab);
+        const bulletNode =
+            this._bulletPool.size() > 0
+                ? this._bulletPool.get()
+                : instantiate(this.bulletPrefab);
 
         this.bulletContainer.addChild(bulletNode);
 

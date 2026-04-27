@@ -3,6 +3,7 @@ export const GameConfig = {
         BASE_SPEED: 300,
         BOUNDARY_PADDING: 50,
         SCALE: 0.3,
+        FIRE_RATE_MS: 300,
     },
     ENEMY: {
         SPAWN_INTERVAL: 2,
@@ -11,10 +12,12 @@ export const GameConfig = {
         MAX_HEALTH: 100,
         DESPAWN_X: -1200,
         SCORE_VALUE: 10,
+        SPAWN_OFFSET: 100,
     },
     BULLET: {
-        SPEED: 800,
-        DAMAGE: 20,
+        SPEED: 20,
+        DAMAGE: 34,
+        MAX_DISTANCE_MULTIPLIER: 1.5,
     },
 } as const;
 

@@ -1,56 +1,71 @@
-import { _decorator, Component, Vec3, view, CCInteger } from "cc";
+import { _decorator, Component, Vec3, view, RigidBody2D, Vec2 } from "cc";
 import { GameConfig, EventName } from "../configs/GameConfig";
 import { EventManager } from "../managers/EventManager";
-const { ccclass, property } = _decorator;
+const { ccclass } = _decorator;
 
 @ccclass("Bullet")
 export class Bullet extends Component {
-    @property(CCInteger)
     private baseDamage: number = GameConfig.BULLET.DAMAGE;
 
-    private _direction: Vec3 = new Vec3(1, 0, 0);
-    private _isMoving: boolean = false;
+    private _isRecycled: boolean = false;
+    private _rb: RigidBody2D | null = null;
+    private readonly _spawnWorldPos: Vec3 = new Vec3(); 
     private _maxDistance: number = 0;
+    private readonly _tempDir: Vec3 = new Vec3();
 
     public get damage(): number {
         return this.baseDamage;
     }
 
-    public init(startPos: Vec3, dir: Vec3) {
-        this.node.setPosition(startPos);
-        this._direction = dir.normalize();
-        this._isMoving = true;
-
-        const visibleSize = view.getVisibleSize();
-        this._maxDistance =
-            Math.max(visibleSize.width, visibleSize.height) + 200;
+    protected onLoad() {
+        this._rb = this.getComponent(RigidBody2D);
+        if (!this._rb) {
+            throw new Error(`[Bullet] Thiếu RigidBody2D trên prefab đạn!`);
+        }
+        this._rb.bullet = true; 
     }
 
-    update(dt: number) {
-        if (!this._isMoving) return;
+    public init(localPos: Vec3, dir: Vec3) {
+        this._isRecycled = false;
+        
+        this.baseDamage = GameConfig.BULLET.DAMAGE;
 
-        const currentPos = this.node.position;
-        const moveStep = new Vec3();
-        Vec3.multiplyScalar(
-            moveStep,
-            this._direction,
-            GameConfig.BULLET.SPEED * dt,
-        );
+        this.node.setPosition(localPos);
+        this.node.updateWorldTransform(); 
+        this._spawnWorldPos.set(this.node.worldPosition);
 
-        const nextPos = new Vec3();
-        Vec3.add(nextPos, currentPos, moveStep);
-        this.node.setPosition(nextPos);
+        this._maxDistance = view.getVisibleSize().width * GameConfig.BULLET.MAX_DISTANCE_MULTIPLIER;
 
-        if (
-            Math.abs(nextPos.x) > this._maxDistance ||
-            Math.abs(nextPos.y) > this._maxDistance
-        ) {
+        if (this._rb) {
+            this._rb.wakeUp();
+            
+            Vec3.normalize(this._tempDir, dir);
+
+            const velocityX = this._tempDir.x * GameConfig.BULLET.SPEED;
+            const velocityY = this._tempDir.y * GameConfig.BULLET.SPEED;
+            this._rb.linearVelocity = new Vec2(velocityX, velocityY);
+        }
+    }
+
+    protected update(dt: number) {
+        if (this._isRecycled) return;
+
+        const currentWorldPos = this.node.worldPosition;
+        const distance = Vec3.distance(this._spawnWorldPos, currentWorldPos);
+
+        if (distance > this._maxDistance) {
             this.recycle();
         }
     }
 
     public recycle() {
-        this._isMoving = false;
+        if (this._isRecycled) return;
+        this._isRecycled = true;
+        
+        if (this._rb) {
+            this._rb.linearVelocity = Vec2.ZERO;
+        }
+
         EventManager.emit(EventName.RETURN_BULLET, this.node);
     }
 }

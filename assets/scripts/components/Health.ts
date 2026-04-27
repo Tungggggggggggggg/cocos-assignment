@@ -4,7 +4,7 @@ const { ccclass } = _decorator;
 
 @ccclass("Health")
 export class Health extends Component {
-    private _maxHealth: number = 100;
+    private _maxHealth: number = 0;
     private _currentHealth: number = 0;
     private _isAlive: boolean = false;
 

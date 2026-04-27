@@ -8,16 +8,19 @@ const { ccclass, property, requireComponent } = _decorator;
 @requireComponent(PlayerInput)
 export class PlayerBrain extends Component {
     @property(sp.Skeleton)
-    private spineAnim: sp.Skeleton = null;
+    private readonly spineAnim: sp.Skeleton | null = null;
 
     private _input: PlayerInput = null;
 
-    onLoad() {
+    protected onLoad() {
         this._input = this.getComponent(PlayerInput);
+        if (!this._input) {
+            throw new Error("[PlayerBrain] Missing PlayerInput component!");
+        }
         this._input.setAlive(false);
     }
 
-    onEnable() {
+    protected onEnable() {
         this.node.on("input-move", this.onMoveStatus, this);
         this.node.on("input-shoot", this.onShootStatus, this);
 
@@ -25,7 +28,7 @@ export class PlayerBrain extends Component {
         EventManager.on(EventName.GAME_OVER, this.onGameOver, this);
     }
 
-    onDisable() {
+    protected onDisable() {
         this.node.off("input-move", this.onMoveStatus, this);
         this.node.off("input-shoot", this.onShootStatus, this);
 
