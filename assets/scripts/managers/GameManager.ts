@@ -20,7 +20,7 @@ export class GameManager extends Component {
         this._score = 0;
         this._timeLeft = GameConfig.GAME.TIME_LIMIT_SECONDS;
         this._lastDisplayTime = this._timeLeft;
-        this._isGameActive = true;
+        this._isGameActive = false;
         EventManager.emit(EventName.GAME_START);
         EventManager.emit(EventName.TIME_TICK, this._timeLeft);
     }
@@ -30,6 +30,7 @@ export class GameManager extends Component {
         EventManager.on(EventName.GAME_OVER, this._onGameOver, this);
         EventManager.on(EventName.GAME_PAUSED, this._onGamePaused, this);
         EventManager.on(EventName.GAME_RESUMED, this._onGameResumed, this);
+        EventManager.on(EventName.PLAYER_READY, this._onPlayerReady, this);
     }
 
     protected onDisable() {
@@ -37,6 +38,7 @@ export class GameManager extends Component {
         EventManager.off(EventName.GAME_OVER, this._onGameOver, this);
         EventManager.off(EventName.GAME_PAUSED, this._onGamePaused, this);
         EventManager.off(EventName.GAME_RESUMED, this._onGameResumed, this);
+        EventManager.off(EventName.PLAYER_READY, this._onPlayerReady, this);
     }
 
     protected update(dt: number): void {
@@ -63,23 +65,27 @@ export class GameManager extends Component {
         this._score += points;
     }
 
+    private _onPlayerReady(): void {
+        this._isGameActive = true;
+    }
+
     private _onGamePaused(): void {
         this._isGameActive = false;
         if (this.popupPause) {
             this.popupPause.show();
         }
-        director.getScheduler().setTimeScale(0);
+        director.pause();
     }
 
     private _onGameResumed(): void {
         this._isGameActive = true;
-        director.getScheduler().setTimeScale(1);
+        director.resume();
     }
 
     private _onGameOver(): void {
         this._isGameActive = false;
 
-        director.getScheduler().setTimeScale(0);
+        director.pause();
         if (PopupManager.instance) {
             PopupManager.instance.showGameOver(this._score);
         }

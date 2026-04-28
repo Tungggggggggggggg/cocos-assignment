@@ -39,7 +39,7 @@ export class EnemyManager extends Component {
     }
 
     protected onEnable(): void {
-        EventManager.on(EventName.GAME_START, this._startGame, this);
+        EventManager.on(EventName.PLAYER_READY, this._startGame, this);
         EventManager.on(EventName.GAME_OVER, this._stopGame, this);
         EventManager.on(EventName.RETURN_ENEMY, this._onReturnEnemy, this);
         EventManager.on(EventName.GAME_PAUSED, this._onGamePaused, this);
@@ -47,7 +47,7 @@ export class EnemyManager extends Component {
     }
 
     protected onDisable(): void {
-        EventManager.off(EventName.GAME_START, this._startGame, this);
+        EventManager.off(EventName.PLAYER_READY, this._startGame, this);
         EventManager.off(EventName.GAME_OVER, this._stopGame, this);
         EventManager.off(EventName.RETURN_ENEMY, this._onReturnEnemy, this);
         EventManager.off(EventName.GAME_PAUSED, this._onGamePaused, this);

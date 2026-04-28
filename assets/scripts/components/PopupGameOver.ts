@@ -1,4 +1,4 @@
-import { _decorator, Component, Label } from "cc";
+import { _decorator, Component, Label, director } from "cc";
 import { GlobalManager } from "../managers/GlobalManager";
 const { ccclass, property } = _decorator;
 
@@ -15,12 +15,14 @@ export class PopupGameOver extends Component {
     }
 
     public onLobbyButtonClicked(): void {
+        director.resume();
         if (GlobalManager.instance) {
             GlobalManager.instance.loadLobby();
         }
     }
 
     public onRestartButtonClicked(): void {
+        director.resume();
         if (GlobalManager.instance) {
             GlobalManager.instance.loadGame();
         }

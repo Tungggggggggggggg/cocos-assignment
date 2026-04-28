@@ -40,6 +40,7 @@ export const EventName = {
     GAME_RESUMED: "game-resumed",
     ENEMY_ESCAPED: "enemy-escaped",
     PLAYER_HEALTH_CHANGED: "player-health-changed",
+    PLAYER_READY: "player-ready",
 } as const;
 
 export type EventNameType = (typeof EventName)[keyof typeof EventName];

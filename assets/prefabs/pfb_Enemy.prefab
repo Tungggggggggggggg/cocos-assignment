@@ -251,7 +251,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 150,
+      "width": 300,
       "height": 15
     },
     "_anchorPoint": {
@@ -282,8 +282,8 @@
     "_color": {
       "__type__": "cc.Color",
       "r": 255,
-      "g": 255,
-      "b": 255,
+      "g": 0,
+      "b": 0,
       "a": 255
     },
     "_spriteFrame": {
@@ -409,7 +409,7 @@
     },
     "_mode": 0,
     "_totalLength": 300,
-    "_progress": 0.5,
+    "_progress": 1,
     "_reverse": false,
     "_id": ""
   },

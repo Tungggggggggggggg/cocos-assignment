@@ -1,4 +1,4 @@
-import { _decorator, Component, Vec3 } from "cc";
+import { _decorator, Component, Vec3, Sprite, Color } from "cc";
 import { Health } from "../components/Health";
 import { AutoMovement } from "../components/AutoMovement";
 import { HealthBar } from "../components/HealthBar";
@@ -16,10 +16,12 @@ export class EnemyBrain extends Component {
 
     private _health: Health = null;
     private _movement: AutoMovement = null;
+    private _sprite: Sprite | null = null;
 
     protected onLoad() {
         this._health = this.getComponent(Health);
         this._movement = this.getComponent(AutoMovement);
+        this._sprite = this.getComponent(Sprite);
 
         if (!this._health || !this._movement) {
             throw new Error(
@@ -52,6 +54,17 @@ export class EnemyBrain extends Component {
 
     private _onHealthChanged(currentHp: number, maxHp: number): void {
         this.healthBar?.updateHealth(currentHp, maxHp);
+
+        if (currentHp >= maxHp) return;
+
+        if (this._sprite) {
+            this._sprite.color = Color.RED;
+            this.scheduleOnce(() => {
+                if (this._sprite?.isValid) {
+                    this._sprite.color = Color.WHITE;
+                }
+            }, 0.1);
+        }
     }
 
     private _onDied(): void {

@@ -13,6 +13,7 @@ export class PlayerBrain extends Component {
 
     private _input: PlayerInput = null;
     private _health: Health | null = null;
+    private _isDead: boolean = false;
 
     protected onLoad() {
         this._input = this.getComponent(PlayerInput);
@@ -46,8 +47,23 @@ export class PlayerBrain extends Component {
     }
 
     private onGameStart() {
-        this._input.setAlive(true);
+        this._isDead = false;
+        this._input.setAlive(false);
         this._health?.init(100);
+
+        if (this.spineAnim) {
+            const track = this.spineAnim.setAnimation(0, "portal", false);
+            this.spineAnim.addAnimation(0, "idle", true, 0);
+            
+            const duration = track ? track.animation.duration : 1.0;
+            this.scheduleOnce(() => {
+                this._input.setAlive(true);
+                EventManager.emit(EventName.PLAYER_READY);
+            }, duration);
+        } else {
+            this._input.setAlive(true);
+            EventManager.emit(EventName.PLAYER_READY);
+        }
     }
 
     private onGameOver() {
@@ -55,7 +71,19 @@ export class PlayerBrain extends Component {
     }
 
     private onDied() {
-        EventManager.emit(EventName.GAME_OVER);
+        if (this._isDead) return;
+        this._isDead = true;
+        this._input.setAlive(false);
+
+        if (this.spineAnim) {
+            const track = this.spineAnim.setAnimation(0, "death", false);
+            const duration = track ? track.animation.duration : 1.0;
+            this.scheduleOnce(() => {
+                EventManager.emit(EventName.GAME_OVER);
+            }, duration);
+        } else {
+            EventManager.emit(EventName.GAME_OVER);
+        }
     }
 
     private onEnemyEscaped() {
@@ -63,23 +91,29 @@ export class PlayerBrain extends Component {
     }
 
     private onMoveStatus(dir: Vec2) {
-        if (!this.spineAnim) return;
+        if (!this.spineAnim || this._isDead) return;
         const isMoving = dir.x !== 0 || dir.y !== 0;
         const animName = isMoving ? "run" : "idle";
 
         if (this.spineAnim.animation !== animName) {
+            if (this.spineAnim.animation === "portal" && !isMoving) {
+                return;
+            }
             this.spineAnim.setAnimation(0, animName, true);
         }
     }
 
     private onShootStatus() {
-        if (this.spineAnim) {
+        if (this.spineAnim && !this._isDead) {
             this.spineAnim.setAnimation(1, "shoot", false);
         }
     }
 
     private onHealthChanged(currentHp: number, maxHp: number) {
         EventManager.emit(EventName.PLAYER_HEALTH_CHANGED, currentHp, maxHp);
+        
+        if (currentHp >= maxHp) return;
+
         if (this.spineAnim) {
             this.spineAnim.color = Color.RED;
 
