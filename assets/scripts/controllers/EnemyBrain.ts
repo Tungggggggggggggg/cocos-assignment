@@ -22,7 +22,9 @@ export class EnemyBrain extends Component {
         this._movement = this.getComponent(AutoMovement);
 
         if (!this._health || !this._movement) {
-            throw new Error("[EnemyBrain] Prefab thiếu component Health hoặc AutoMovement!");
+            throw new Error(
+                "[EnemyBrain] Prefab thiếu component Health hoặc AutoMovement!",
+            );
         }
     }
 
@@ -42,7 +44,10 @@ export class EnemyBrain extends Component {
         this.node.setPosition(startPos);
         this._health.init(GameConfig.ENEMY.MAX_HEALTH);
         this._movement.init(speed, new Vec3(-1, 0, 0));
-        this.healthBar?.updateHealth(GameConfig.ENEMY.MAX_HEALTH, GameConfig.ENEMY.MAX_HEALTH);
+        this.healthBar?.updateHealth(
+            GameConfig.ENEMY.MAX_HEALTH,
+            GameConfig.ENEMY.MAX_HEALTH,
+        );
     }
 
     private _onHealthChanged(currentHp: number, maxHp: number): void {
@@ -56,6 +61,7 @@ export class EnemyBrain extends Component {
     }
 
     private _onOutOfBounds(): void {
+        EventManager.emit(EventName.ENEMY_ESCAPED);
         EventManager.emit(EventName.RETURN_ENEMY, this.node);
     }
 }

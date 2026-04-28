@@ -34,10 +34,16 @@ export class LoadingManager extends Component {
 
     protected update(dt: number): void {
         if (this._progress < 1) {
-            this._progress = math.clamp01(this._progress + dt * this._loadSpeed);
+            this._progress = math.clamp01(
+                this._progress + dt * this._loadSpeed,
+            );
         }
 
-        this._displayProgress = math.lerp(this._displayProgress, this._progress, dt * 8);
+        this._displayProgress = math.lerp(
+            this._displayProgress,
+            this._progress,
+            dt * 8,
+        );
 
         if (this.loadingBar) {
             this.loadingBar.progress = this._displayProgress;
@@ -58,7 +64,7 @@ export class LoadingManager extends Component {
         if (this.statusText) {
             const msgIndex = Math.min(
                 Math.floor(this._displayProgress * this._messages.length),
-                this._messages.length - 1
+                this._messages.length - 1,
             );
             this.statusText.string = this._messages[msgIndex];
         }

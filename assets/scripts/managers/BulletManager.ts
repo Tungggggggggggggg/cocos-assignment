@@ -32,9 +32,11 @@ export class BulletManager extends Component {
             return;
         }
         BulletManager.instance = this;
-        
+
         if (!this.bulletPrefab || !this.bulletContainer) {
-            throw new Error("[BulletManager] Missing bulletPrefab or bulletContainer!");
+            throw new Error(
+                "[BulletManager] Missing bulletPrefab or bulletContainer!",
+            );
         }
     }
 

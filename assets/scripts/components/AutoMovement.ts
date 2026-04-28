@@ -25,9 +25,13 @@ export class AutoMovement extends Component {
         if (!this._isMoving) return;
 
         const currentPos = this.node.position;
-        Vec3.multiplyScalar(this._tempMoveStep, this._direction, this._speed * dt);
+        Vec3.multiplyScalar(
+            this._tempMoveStep,
+            this._direction,
+            this._speed * dt,
+        );
         Vec3.add(this._tempNextPos, currentPos, this._tempMoveStep);
-        
+
         this.node.setPosition(this._tempNextPos);
 
         if (this._tempNextPos.x < GameConfig.ENEMY.DESPAWN_X) {

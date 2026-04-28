@@ -13,21 +13,33 @@ export const GameConfig = {
         DESPAWN_X: -1200,
         SCORE_VALUE: 10,
         SPAWN_OFFSET: 100,
+        KAMIKAZE_DAMAGE: 20,
+        MIN_SPAWN_INTERVAL: 0.5,
+        SPAWN_DECREASE_RATE: 0.05,
+        ESCAPE_DAMAGE: 10,
     },
     BULLET: {
         SPEED: 20,
         DAMAGE: 34,
         MAX_DISTANCE_MULTIPLIER: 1.5,
     },
+    GAME: {
+        TIME_LIMIT_SECONDS: 30,
+    },
 } as const;
 
 export const EventName = {
-    GAME_START:     "game-start",
-    GAME_OVER:      "game-over",
-    ADD_SCORE:      "add-score",
-    ENTITY_DIED:    "entity-died",
-    RETURN_BULLET:  "return-bullet",
-    RETURN_ENEMY:   "return-enemy",
+    GAME_START: "game-start",
+    GAME_OVER: "game-over",
+    ADD_SCORE: "add-score",
+    ENTITY_DIED: "entity-died",
+    RETURN_BULLET: "return-bullet",
+    RETURN_ENEMY: "return-enemy",
+    TIME_TICK: "time-tick",
+    GAME_PAUSED: "game-paused",
+    GAME_RESUMED: "game-resumed",
+    ENEMY_ESCAPED: "enemy-escaped",
+    PLAYER_HEALTH_CHANGED: "player-health-changed",
 } as const;
 
-export type EventNameType = typeof EventName[keyof typeof EventName];
+export type EventNameType = (typeof EventName)[keyof typeof EventName];

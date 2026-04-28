@@ -9,7 +9,7 @@ export class Bullet extends Component {
 
     private _isRecycled: boolean = false;
     private _rb: RigidBody2D | null = null;
-    private readonly _spawnWorldPos: Vec3 = new Vec3(); 
+    private readonly _spawnWorldPos: Vec3 = new Vec3();
     private _maxDistance: number = 0;
     private readonly _tempDir: Vec3 = new Vec3();
 
@@ -22,23 +22,25 @@ export class Bullet extends Component {
         if (!this._rb) {
             throw new Error(`[Bullet] Thiếu RigidBody2D trên prefab đạn!`);
         }
-        this._rb.bullet = true; 
+        this._rb.bullet = true;
     }
 
     public init(localPos: Vec3, dir: Vec3) {
         this._isRecycled = false;
-        
+
         this.baseDamage = GameConfig.BULLET.DAMAGE;
 
         this.node.setPosition(localPos);
-        this.node.updateWorldTransform(); 
+        this.node.updateWorldTransform();
         this._spawnWorldPos.set(this.node.worldPosition);
 
-        this._maxDistance = view.getVisibleSize().width * GameConfig.BULLET.MAX_DISTANCE_MULTIPLIER;
+        this._maxDistance =
+            view.getVisibleSize().width *
+            GameConfig.BULLET.MAX_DISTANCE_MULTIPLIER;
 
         if (this._rb) {
             this._rb.wakeUp();
-            
+
             Vec3.normalize(this._tempDir, dir);
 
             const velocityX = this._tempDir.x * GameConfig.BULLET.SPEED;
@@ -61,7 +63,7 @@ export class Bullet extends Component {
     public recycle() {
         if (this._isRecycled) return;
         this._isRecycled = true;
-        
+
         if (this._rb) {
             this._rb.linearVelocity = Vec2.ZERO;
         }
