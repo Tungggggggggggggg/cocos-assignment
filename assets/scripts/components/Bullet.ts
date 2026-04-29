@@ -10,7 +10,7 @@ export class Bullet extends Component {
     private _isRecycled: boolean = false;
     private _rb: RigidBody2D | null = null;
     private readonly _spawnWorldPos: Vec3 = new Vec3();
-    private _maxDistance: number = 0;
+    private _maxDistanceSquared: number = 0;
     private readonly _tempDir: Vec3 = new Vec3();
 
     public get damage(): number {
@@ -34,9 +34,10 @@ export class Bullet extends Component {
         this.node.updateWorldTransform();
         this._spawnWorldPos.set(this.node.worldPosition);
 
-        this._maxDistance =
+        const maxDistance =
             view.getVisibleSize().width *
             GameConfig.BULLET.MAX_DISTANCE_MULTIPLIER;
+        this._maxDistanceSquared = maxDistance * maxDistance;
 
         if (this._rb) {
             this._rb.wakeUp();
@@ -53,9 +54,9 @@ export class Bullet extends Component {
         if (this._isRecycled) return;
 
         const currentWorldPos = this.node.worldPosition;
-        const distance = Vec3.distance(this._spawnWorldPos, currentWorldPos);
+        const squaredDistance = Vec3.squaredDistance(this._spawnWorldPos, currentWorldPos);
 
-        if (distance > this._maxDistance) {
+        if (squaredDistance > this._maxDistanceSquared) {
             this.recycle();
         }
     }

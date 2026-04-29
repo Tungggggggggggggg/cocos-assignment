@@ -44,6 +44,11 @@ export class EnemyBrain extends Component {
 
     public spawn(startPos: Vec3, speed: number): void {
         this.node.setPosition(startPos);
+
+        this.unscheduleAllCallbacks();
+        if (this._sprite) {
+            this._sprite.color = Color.WHITE;
+        }
         this._health.init(GameConfig.ENEMY.MAX_HEALTH);
         this._movement.init(speed, new Vec3(-1, 0, 0));
         this.healthBar?.updateHealth(

@@ -1149,7 +1149,7 @@
       "__id__": 27
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 39
@@ -1342,7 +1342,7 @@
       "__id__": 27
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 44
@@ -1557,6 +1557,10 @@
     },
     "_enabled": true,
     "__prefab": null,
+    "_bgmSlider": null,
+    "_sfxSlider": null,
+    "_bgmToggle": null,
+    "_sfxToggle": null,
     "_id": "c6W07rwtVOn4UXvxjG65Ny"
   },
   {

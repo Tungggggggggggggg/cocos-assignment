@@ -29,6 +29,7 @@ export class EnemyManager extends Component {
     
     private _currentSpawnInterval: number = 0;
     private _spawnTimer: number = 0;
+    private readonly _spawnPos: Vec3 = new Vec3();
 
     protected onLoad(): void {
         if (!this.enemyPrefab || !this.enemyContainer) {
@@ -117,9 +118,10 @@ export class EnemyManager extends Component {
             GameConfig.ENEMY.SPEED_MIN,
             GameConfig.ENEMY.SPEED_MAX,
         );
+        this._spawnPos.set(spawnX, spawnY, 0);
         enemyNode
             .getComponent(EnemyBrain)
-            ?.spawn(new Vec3(spawnX, spawnY, 0), speed);
+            ?.spawn(this._spawnPos, speed);
     }
 
     private _onReturnEnemy(enemyNode: Node): void {

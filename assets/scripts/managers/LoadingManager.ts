@@ -16,6 +16,7 @@ export class LoadingManager extends Component {
     private _progress: number = 0;
     private _displayProgress: number = 0;
     private readonly _loadSpeed: number = 0.5;
+    private readonly _tempColor: Color = new Color();
 
     private readonly _messages: string[] = [
         "Đang triệu hồi tài nguyên...",
@@ -51,9 +52,9 @@ export class LoadingManager extends Component {
             const barSprite = this.loadingBar.barSprite;
             if (barSprite) {
                 const alpha = 180 + Math.sin(Date.now() / 150) * 75;
-                const color = barSprite.color.clone();
-                color.a = alpha;
-                barSprite.color = color;
+                this._tempColor.set(barSprite.color);
+                this._tempColor.a = alpha;
+                barSprite.color = this._tempColor;
             }
         }
 

@@ -10,6 +10,7 @@ export class PlayerWeapon extends Component {
 
     private _lastFireTime: number = 0;
     private _fireRateMs: number = GameConfig.PLAYER.FIRE_RATE_MS;
+    private readonly _spawnDir: Vec3 = new Vec3();
 
     protected onEnable() {
         this.node.on("input-shoot", this.onShootInput, this);
@@ -30,9 +31,10 @@ export class PlayerWeapon extends Component {
             ? this.muzzleNode.worldPosition
             : this.node.worldPosition;
         const dirX = this.node.scale.x > 0 ? 1 : -1;
+        this._spawnDir.set(dirX, 0, 0);
 
         if (BulletManager.instance) {
-            BulletManager.instance.spawnBullet(muzzlePos, new Vec3(dirX, 0, 0));
+            BulletManager.instance.spawnBullet(muzzlePos, this._spawnDir);
         }
     }
 }

@@ -41,6 +41,11 @@ export const EventName = {
     ENEMY_ESCAPED: "enemy-escaped",
     PLAYER_HEALTH_CHANGED: "player-health-changed",
     PLAYER_READY: "player-ready",
+    CHANGE_BGM_VOLUME: "change-bgm-volume",
+    CHANGE_SFX_VOLUME: "change-sfx-volume",
+    MUTE_BGM: "mute-bgm",
+    MUTE_SFX: "mute-sfx",
+    PLAY_SFX: "play-sfx",
 } as const;
 
 export type EventNameType = (typeof EventName)[keyof typeof EventName];
