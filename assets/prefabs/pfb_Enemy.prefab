@@ -43,13 +43,10 @@
       },
       {
         "__id__": 34
-      },
-      {
-        "__id__": 36
       }
     ],
     "_prefab": {
-      "__id__": 38
+      "__id__": 36
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -418,7 +415,7 @@
     "fileId": "32llhTXQdAAq4P6nnJsmUn"
   },
   {
-    "__type__": "7cff5TGIDBDfJ5DKMd1YPMz",
+    "__type__": "199674c1PtNBok68cNRqP+D",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -428,14 +425,14 @@
     "__prefab": {
       "__id__": 17
     },
-    "healthBar": {
+    "bar": {
       "__id__": 14
     },
     "_id": ""
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "79PqBKU9FFr41A7s90pINn"
+    "fileId": "05bpmIYCFBmKLC6zJn5LZd"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -628,7 +625,7 @@
     "fileId": "12bnHvJThNgrFVZa5FZ2TN"
   },
   {
-    "__type__": "6e4b55PLxBPT538VXfnDC9q",
+    "__type__": "590d168tCBJX4N/ErtBlBcR",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -642,10 +639,10 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "cdiT2M6vRD/aFK158z3moZ"
+    "fileId": "56g7XEt5hCAJUgp0wEq0bX"
   },
   {
-    "__type__": "9359aZQWUdMuKVMwQej0UhR",
+    "__type__": "8cdbap2JyREiYOru7CLEoYn",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -655,14 +652,17 @@
     "__prefab": {
       "__id__": 33
     },
+    "healthBarView": {
+      "__id__": 16
+    },
     "_id": ""
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "4bXeAcflFMQZHhrKNK7/O3"
+    "fileId": "10PDp2Dv9Eqag3X5ojoDDR"
   },
   {
-    "__type__": "63c12dT0jRLubFUBh/FZhUR",
+    "__type__": "590d168tCBJX4N/ErtBlBcR",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -676,27 +676,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "2bUNsa3llGM5oemfuVrMPN"
-  },
-  {
-    "__type__": "6dbecZPwMZFLJtI+7u4Ljse",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 1
-    },
-    "_enabled": true,
-    "__prefab": {
-      "__id__": 37
-    },
-    "healthBar": {
-      "__id__": 16
-    },
-    "_id": ""
-  },
-  {
-    "__type__": "cc.CompPrefabInfo",
-    "fileId": "679hx7vXRJvIvufz9AXwmT"
+    "fileId": "c9yxBfoMxHy7AqhHc2QvbR"
   },
   {
     "__type__": "cc.PrefabInfo",
