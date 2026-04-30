@@ -2,13 +2,17 @@ import {
     _decorator, Component, Vec3, Sprite,
     Color, Collider2D, Contact2DType, IPhysics2DContact, math
 } from "cc";
-import { Health } from "../shared/Health";
+import { Health }        from "../shared/Health";
 import { HealthBarView } from "../ui/hud/HealthBarView";
-import { GameBus } from "../core/events/EventEmitter";
-import { GameConfig } from "../data/GameConfig";
-import { EnemyData } from "../data/EnemyData";
+import { GameBus }       from "../core/events/EventEmitter";
+import { GameConfig }    from "../data/GameConfig";
+import { EnemyData }     from "../data/EnemyData";
+import { Bullet }        from "../bullet/Bullet";
 
 const { ccclass, property, requireComponent } = _decorator;
+
+// Cache vector để không tạo mới mỗi frame
+const LEFT_DIR = new Vec3(-1, 0, 0);
 
 @ccclass("EnemyController")
 @requireComponent(Health)
@@ -16,20 +20,17 @@ export class EnemyController extends Component {
     @property(HealthBarView)
     private readonly healthBarView: HealthBarView | null = null;
 
-    // --- State ---
-    private _data:       EnemyData | null = null;
-    private _health:     Health | null    = null;
-    private _collider:   Collider2D | null = null;
-    private _sprite:     Sprite | null    = null;
+    private _data:     EnemyData | null = null;
+    private _health:   Health | null    = null;
+    private _collider: Collider2D | null = null;
+    private _sprite:   Sprite | null    = null;
 
-    private _speed     = 0;
-    private _isActive  = false;
+    private _speed    = 0;
+    private _isActive = false;
 
-    // Cache để tránh allocation trong update()
     private readonly _moveStep = new Vec3();
     private readonly _nextPos  = new Vec3();
 
-    // --- Lifecycle ---
     protected onLoad(): void {
         this._health   = this.getComponent(Health);
         this._collider = this.getComponent(Collider2D);
@@ -51,22 +52,19 @@ export class EnemyController extends Component {
     protected update(dt: number): void {
         if (!this._isActive) return;
 
-        const pos = this.node.position;
-        Vec3.multiplyScalar(this._moveStep, Vec3.LEFT, this._speed * dt);
-        Vec3.add(this._nextPos, pos, this._moveStep);
+        Vec3.multiplyScalar(this._moveStep, LEFT_DIR, this._speed * dt);
+        Vec3.add(this._nextPos, this.node.position, this._moveStep);
         this.node.setPosition(this._nextPos);
 
-        // Tính despawn dựa theo visible size — không hardcode
         if (this._nextPos.x < GameConfig.ENEMY.DESPAWN_X) {
             this._isActive = false;
             this._onEscaped();
         }
     }
 
-    // --- Public API ---
     public spawn(data: EnemyData, startPos: Vec3): void {
-        this._data    = data;
-        this._speed   = math.randomRange(data.speedMin, data.speedMax);
+        this._data     = data;
+        this._speed    = math.randomRange(data.speedMin, data.speedMax);
         this._isActive = true;
 
         this.node.setPosition(startPos);
@@ -76,7 +74,6 @@ export class EnemyController extends Component {
         if (this._sprite) this._sprite.color = Color.WHITE;
     }
 
-    // --- Private handlers ---
     private _onHealthChanged(current: number, max: number): void {
         this.healthBarView?.refresh(current, max);
         if (current < max) this._flashDamage();
@@ -101,10 +98,9 @@ export class EnemyController extends Component {
         other: Collider2D,
     ): void {
         if (!this._health?.isAlive) return;
-        const bullet = other.node.getComponent(
-            // import lazy để tránh circular
-            require("../bullet/Bullet").Bullet
-        );
+
+        // Fix: cast rõ ràng thay vì dùng require()
+        const bullet = other.node.getComponent(Bullet);
         if (bullet) {
             this._health.takeDamage(bullet.damage);
             if (!bullet.isPiercing) bullet.recycle();
@@ -119,7 +115,6 @@ export class EnemyController extends Component {
         }, 0.1);
     }
 
-    // Poolable interface
     onBorrow(): void { this.node.active = true; }
     onReturn(): void { this.node.active = false; }
 }

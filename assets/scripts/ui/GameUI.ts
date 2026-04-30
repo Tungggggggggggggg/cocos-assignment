@@ -15,13 +15,15 @@ export class GameUI extends Component {
 
     protected onLoad(): void {
         if (!this.timerLabel || !this.healthLabel || !this.healthBar) {
-            throw new Error("[GameUI] Missing required UI references in Inspector.");
+            throw new Error(
+                "[GameUI] Missing required UI references in Inspector.",
+            );
         }
     }
 
     protected onEnable(): void {
-        GameBus.on("timer:tick",             this._onTimeTick,      this);
-        GameBus.on("player:health-changed",  this._onHealthChanged, this);
+        GameBus.on("timer:tick", this._onTimeTick, this);
+        GameBus.on("player:health-changed", this._onHealthChanged, this);
     }
 
     protected onDisable(): void {
@@ -45,7 +47,8 @@ export class GameUI extends Component {
         if (!this.timerLabel) return;
         const m = Math.floor(p.secondsLeft / 60);
         const s = Math.floor(p.secondsLeft % 60);
-        this.timerLabel.string =
-            `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+        const mStr = m < 10 ? `0${m}` : `${m}`;
+        const sStr = s < 10 ? `0${s}` : `${s}`;
+        this.timerLabel.string = `${mStr}:${sStr}`;
     }
 }

@@ -2,7 +2,7 @@ import { _decorator, Component, director } from "cc";
 import { GameBus }      from "../core/events/EventEmitter";
 import { GameConfig }   from "../data/GameConfig";
 import { PopupManager } from "./PopupManager";
-import { ScoreManager } from "./ScoreManager";
+import { ScoreManager } from "../managers/ScoreManager";
 import { PopupPause }   from "../ui/popups/PopupPause";
 const { ccclass, property } = _decorator;
 

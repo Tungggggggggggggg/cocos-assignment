@@ -1,10 +1,6 @@
-import { math } from "cc";
+import { math, view } from "cc";
 
 export class MathUtils {
-    /**
-     * Weighted random pick từ array có trường weight
-     * Dùng cho EnemySpawner, loot drop, v.v.
-     */
     static weightedRandom<T extends { spawnWeight: number }>(
         items: readonly T[]
     ): T {
@@ -17,10 +13,6 @@ export class MathUtils {
         return items[0];
     }
 
-    /**
-     * Rotate Vec2/Vec3 quanh trục Z một góc degrees
-     * Dùng cho SpreadGun, skill xoay đạn
-     */
     static rotateDir(x: number, y: number, degrees: number): [number, number] {
         const rad = (degrees * Math.PI) / 180;
         const cos = Math.cos(rad);
@@ -28,11 +20,8 @@ export class MathUtils {
         return [x * cos - y * sin, x * sin + y * cos];
     }
 
-    /**
-     * Tính despawn X dựa trên visible size thay vì hardcode
-     */
     static despawnX(marginPx = 100): number {
-        const { width } = require("cc").view.getVisibleSize();
+        const { width } = view.getVisibleSize();
         return -(width / 2 + marginPx);
     }
 }

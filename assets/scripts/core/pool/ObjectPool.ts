@@ -1,5 +1,3 @@
-import { Node } from "cc";
-
 export interface Poolable {
     onBorrow(): void;   // Gọi khi lấy ra khỏi pool
     onReturn(): void;   // Gọi khi trả về pool
