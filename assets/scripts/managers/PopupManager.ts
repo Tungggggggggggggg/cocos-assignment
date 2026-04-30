@@ -1,19 +1,13 @@
 import {
-    _decorator,
-    Component,
-    Node,
-    Prefab,
-    instantiate,
-    director,
-    Canvas,
-    isValid,
+    _decorator, Component, Node, Prefab,
+    instantiate, director, Canvas, isValid,
 } from "cc";
-import { PopupGameOver } from "../components/PopupGameOver";
+import { PopupGameOver } from "../ui/popups/PopupGameOver";
 const { ccclass, property } = _decorator;
 
 @ccclass("PopupManager")
 export class PopupManager extends Component {
-    public static instance: PopupManager = null;
+    public static instance: PopupManager | null = null;
 
     @property(Prefab)
     private readonly pfbSettings: Prefab | null = null;
@@ -21,47 +15,47 @@ export class PopupManager extends Component {
     @property(Prefab)
     private readonly pfbGameOver: Prefab | null = null;
 
-    private _settingsNode: Node = null;
-    private _gameOverNode: Node = null;
+    private _settingsNode: Node | null = null;
+    private _gameOverNode: Node | null = null;
 
-    protected onLoad() {
-        if (PopupManager.instance === null) {
-            PopupManager.instance = this;
-        } else {
-            this.node.destroy();
-            return;
-        }
-
-        if (!this.pfbSettings) {
-            throw new Error(
-                "[PopupManager] Missing popupContainer or pfbSettings!",
-            );
-        }
+    protected onLoad(): void {
+        if (PopupManager.instance) { this.node.destroy(); return; }
+        PopupManager.instance = this;
     }
 
-    public showSettings() {
-        const canvas = director.getScene().getComponentInChildren(Canvas);
-        if (!canvas) {
-            throw new Error("[PopupManager]");
-        }
+    protected onDestroy(): void {
+        if (PopupManager.instance === this) PopupManager.instance = null;
+    }
+
+    showSettings(): void {
+        const canvas = this._getCanvas();
+        if (!canvas) return;
+
         if (this._settingsNode && isValid(this._settingsNode)) {
-            this._settingsNode.parent = canvas.node;
+            this._settingsNode.parent = canvas;
             this._settingsNode.active = true;
             return;
         }
+        if (!this.pfbSettings) return;
         this._settingsNode = instantiate(this.pfbSettings);
-        canvas.node.addChild(this._settingsNode);
-        this._settingsNode.active = true;
+        canvas.addChild(this._settingsNode);
     }
 
-    public showGameOver(score: number) {
-        const canvas = director.getScene().getComponentInChildren(Canvas);
-        if (!canvas) return;
+    showGameOver(score: number): void {
+        const canvas = this._getCanvas();
+        if (!canvas || !this.pfbGameOver) return;
+
         if (!this._gameOverNode || !isValid(this._gameOverNode)) {
-            this._gameOverNode = instantiate(this.pfbGameOver!);
-            canvas.node.addChild(this._gameOverNode);
+            this._gameOverNode = instantiate(this.pfbGameOver);
         }
-        this._gameOverNode.parent = canvas.node;
+        this._gameOverNode.parent = canvas;
         this._gameOverNode.getComponent(PopupGameOver)?.show(score);
+    }
+
+    // Tách việc tìm Canvas ra — không trải rộng khắp nơi
+    private _getCanvas(): Node | null {
+        return director.getScene()
+            ?.getComponentInChildren(Canvas)
+            ?.node ?? null;
     }
 }
