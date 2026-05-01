@@ -47,7 +47,6 @@ export class SoundManager extends Component {
         GameBus.on("sound:sfx-mute", (p) => this._muteSfx(p.muted), this);
         GameBus.on("sound:play-sfx", () => this._playSfx(), this);
         GameBus.on("sound:play-coin", () => this._playCoin(), this);
-        GameBus.on("enemy:died", () => GameBus.emit("sound:play-coin"), this);
     }
 
     protected onDisable(): void {

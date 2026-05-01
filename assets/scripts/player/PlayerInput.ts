@@ -39,6 +39,9 @@ export class PlayerInput extends Component {
         if (e.keyCode === KeyCode.SPACE) {
             this.node.emit("input:shoot");
         }
+        if (e.keyCode === KeyCode.KEY_E) {
+            this.node.emit("input:weapon-swap");
+        }
     }
 
     private _onKeyUp(e: EventKeyboard): void {

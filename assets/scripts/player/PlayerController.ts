@@ -5,6 +5,8 @@ import { WeaponController } from "../weapon/WeaponController";
 import { Health } from "../shared/Health";
 import { GameBus } from "../core/events/EventEmitter";
 import { GameConfig } from "../data/GameConfig";
+import { SpreadGun } from "../weapon/SpreadGun";
+import { BasicGun } from "../weapon/BasicGun";
 
 const { ccclass, property, requireComponent } = _decorator;
 
@@ -21,6 +23,7 @@ export class PlayerController extends Component {
     private _weapon: WeaponController | null = null;
     private _health: Health | null = null;
     private _isDead = false;
+    private _useSpread = false;
 
     protected onLoad(): void {
         this._input = this.getComponent(PlayerInput);
@@ -35,6 +38,7 @@ export class PlayerController extends Component {
         this.node.on("input:shoot", this._onShoot, this);
         this.node.on("health-changed", this._onHealthChanged, this);
         this.node.on("died", this._onDied, this);
+        this.node.on("input:weapon-swap", this._onWeaponSwap, this);
 
         GameBus.on("game:start", this._onGameStart, this);
         GameBus.on("game:over", this._onGameOver, this);
@@ -46,7 +50,7 @@ export class PlayerController extends Component {
         this.node.off("input:shoot", this._onShoot, this);
         this.node.off("health-changed", this._onHealthChanged, this);
         this.node.off("died", this._onDied, this);
-
+        this.node.off("input:weapon-swap", this._onWeaponSwap, this);
         GameBus.offAll(this);
     }
 
@@ -115,5 +119,12 @@ export class PlayerController extends Component {
         const track = this.spine.setAnimation(0, "death", false);
         const duration = track?.animation.duration ?? 1.0;
         this.scheduleOnce(() => GameBus.emit("game:over"), duration);
+    }
+
+    private _onWeaponSwap(): void {
+        if (!this._weapon || this._isDead) return;
+        this._useSpread = !this._useSpread;
+        const next = this._useSpread ? new SpreadGun() : new BasicGun();
+        this._weapon.equipWeapon(next);
     }
 }
