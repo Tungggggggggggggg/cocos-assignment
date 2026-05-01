@@ -1,5 +1,6 @@
 import { _decorator, Component, Label, ProgressBar } from "cc";
 import { GameBus } from "../core/events/EventEmitter";
+
 const { ccclass, property } = _decorator;
 
 @ccclass("GameUI")
@@ -13,17 +14,20 @@ export class GameUI extends Component {
     @property(ProgressBar)
     private readonly healthBar: ProgressBar | null = null;
 
+    @property(Label)
+    private readonly scoreLabel: Label | null = null;
+
     protected onLoad(): void {
         if (!this.timerLabel || !this.healthLabel || !this.healthBar) {
-            throw new Error(
-                "[GameUI] Missing required UI references in Inspector.",
-            );
+            throw new Error("[GameUI] Missing required UI references.");
         }
     }
 
     protected onEnable(): void {
         GameBus.on("timer:tick", this._onTimeTick, this);
         GameBus.on("player:health-changed", this._onHealthChanged, this);
+        GameBus.on("score:add", this._onScoreAdd, this);
+        GameBus.on("game:start", this._onGameStart, this);
     }
 
     protected onDisable(): void {
@@ -32,6 +36,24 @@ export class GameUI extends Component {
 
     public onPauseButtonClicked(): void {
         GameBus.emit("game:paused");
+    }
+
+    private _currentScore = 0;
+
+    private _onGameStart(): void {
+        this._currentScore = 0;
+        this._refreshScore();
+    }
+
+    private _onScoreAdd(p: { points: number }): void {
+        this._currentScore += p.points;
+        this._refreshScore();
+    }
+
+    private _refreshScore(): void {
+        if (this.scoreLabel) {
+            this.scoreLabel.string = `SCORE: ${this._currentScore}`;
+        }
     }
 
     private _onHealthChanged(p: { current: number; max: number }): void {
@@ -47,8 +69,6 @@ export class GameUI extends Component {
         if (!this.timerLabel) return;
         const m = Math.floor(p.secondsLeft / 60);
         const s = Math.floor(p.secondsLeft % 60);
-        const mStr = m < 10 ? `0${m}` : `${m}`;
-        const sStr = s < 10 ? `0${s}` : `${s}`;
-        this.timerLabel.string = `${mStr}:${sStr}`;
+        this.timerLabel.string = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
     }
 }

@@ -2,8 +2,9 @@ import { _decorator, Component, director } from "cc";
 import { GameBus } from "../core/events/EventEmitter";
 import { GameConfig } from "../data/GameConfig";
 import { PopupManager } from "./PopupManager";
-import { ScoreManager } from "../managers/ScoreManager";
+import { ScoreManager } from "./ScoreManager";
 import { PopupPause } from "../ui/popups/PopupPause";
+
 const { ccclass, property } = _decorator;
 
 @ccclass("GameManager")
@@ -29,6 +30,7 @@ export class GameManager extends Component {
 
     protected onEnable(): void {
         GameBus.on("game:over", this._onGameOver, this);
+        GameBus.on("game:won", this._onGameWon, this);
         GameBus.on("game:paused", this._onPaused, this);
         GameBus.on("game:resumed", this._onResumed, this);
         GameBus.on("player:ready", this._onPlayerReady, this);
@@ -47,7 +49,7 @@ export class GameManager extends Component {
             this._timeLeft = 0;
             this._active = false;
             GameBus.emit("timer:tick", { secondsLeft: 0 });
-            GameBus.emit("game:over");
+            GameBus.emit("game:won");
             return;
         }
 
@@ -78,5 +80,12 @@ export class GameManager extends Component {
         director.pause();
         const score = this.scoreManager?.score ?? 0;
         PopupManager.instance?.showGameOver(score);
+    }
+
+    private _onGameWon(): void {
+        this._active = false;
+        director.pause();
+        const score = this.scoreManager?.score ?? 0;
+        PopupManager.instance?.showWinner(score);
     }
 }

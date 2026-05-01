@@ -2,12 +2,12 @@
   "ver": "1.1.43",
   "importer": "prefab",
   "imported": true,
-  "uuid": "1c3bf243-d91a-4580-9aa4-4cb0fdb4311d",
+  "uuid": "8494c3a6-b3c2-498d-86b2-ece286eb5002",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "pfb_Enemy"
+    "syncNodeName": "pfb_PopupWinner"
   }
 }

@@ -3,6 +3,7 @@ import { Vec3 } from "cc";
 export interface GameEventMap {
     "game:start": void;
     "game:over": void;
+    "game:won": void;
     "game:paused": void;
     "game:resumed": void;
 

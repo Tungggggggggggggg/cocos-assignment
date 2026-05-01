@@ -87,10 +87,14 @@ export class EnemyController extends Component {
 
     private _onDied(): void {
         this._isActive = false;
+        const scoreValue = this._data?.scoreValue ?? 0;
+
         GameBus.emit("enemy:died", {
-            scoreValue: this._data?.scoreValue ?? 0,
+            scoreValue,
             position: this.node.worldPosition,
         });
+        GameBus.emit("score:add", { points: scoreValue });
+        GameBus.emit("sound:play-coin");
         GameBus.emit("enemy:return", this.node);
     }
 
