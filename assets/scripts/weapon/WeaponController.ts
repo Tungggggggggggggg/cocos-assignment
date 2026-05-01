@@ -20,13 +20,13 @@ export class WeaponController extends Component {
         this.node.off("input:shoot", this._onShoot, this);
     }
 
-    // Gọi từ bên ngoài khi pick up weapon
     public equipWeapon(weapon: IWeapon): void {
         this._weapon = weapon;
     }
 
     private _onShoot(): void {
-        const origin = this.muzzleNode?.worldPosition ?? this.node.worldPosition;
+        const origin =
+            this.muzzleNode?.worldPosition ?? this.node.worldPosition;
         const dirX = this.node.scale.x > 0 ? 1 : -1;
         this._spawnDir.set(dirX, 0, 0);
         this._weapon.fire(origin, this._spawnDir);

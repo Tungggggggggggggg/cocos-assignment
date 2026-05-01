@@ -7,10 +7,12 @@ const { ccclass } = _decorator;
 export class ScoreManager extends Component {
     private _score = 0;
 
-    get score(): number { return this._score; }
+    get score(): number {
+        return this._score;
+    }
 
     protected onEnable(): void {
-        GameBus.on("score:add",  this._onAdd,   this);
+        GameBus.on("score:add", this._onAdd, this);
         GameBus.on("game:start", this._onReset, this);
     }
 

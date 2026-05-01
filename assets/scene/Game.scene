@@ -24,7 +24,7 @@
     "_active": true,
     "_components": [],
     "_prefab": {
-      "__id__": 87
+      "__id__": 86
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -55,7 +55,7 @@
     },
     "autoReleaseAssets": false,
     "_globals": {
-      "__id__": 92
+      "__id__": 91
     },
     "_id": "b2f7ffe9-261c-4a43-8192-fbc6d4f0f3b9"
   },
@@ -2002,8 +2002,8 @@
     ],
     "value": {
       "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
+      "x": 780,
+      "y": 360.00000000000006,
       "z": 0
     }
   },
@@ -2177,9 +2177,6 @@
         "__id__": 85
       },
       {
-        "__id__": 86
-      },
-      {
         "__id__": 83
       }
     ],
@@ -2261,25 +2258,6 @@
     "_id": "baVTAKw2xEB4cZoOYsLvHQ"
   },
   {
-    "__type__": "84a3d0SiO1KCaBt8o2mOgRq",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 80
-    },
-    "_enabled": true,
-    "__prefab": null,
-    "pfbSettings": {
-      "__uuid__": "f5f193e8-ba9e-4e38-a251-e5c431b5706d",
-      "__expectedType__": "cc.Prefab"
-    },
-    "pfbGameOver": {
-      "__uuid__": "1617f0e9-54a6-4d27-a3e8-870ecf38945e",
-      "__expectedType__": "cc.Prefab"
-    },
-    "_id": "f5H7CvIzVCp5NFlXSVlOkt"
-  },
-  {
     "__type__": "5471a8FjcNPYbwe6U7yRg2T",
     "_name": "",
     "_objFlags": 0,
@@ -2323,10 +2301,10 @@
     "instance": null,
     "targetOverrides": [
       {
-        "__id__": 88
+        "__id__": 87
       },
       {
-        "__id__": 90
+        "__id__": 89
       }
     ],
     "nestedPrefabInstanceRoots": [
@@ -2351,7 +2329,7 @@
       "__id__": 66
     },
     "targetInfo": {
-      "__id__": 89
+      "__id__": 88
     }
   },
   {
@@ -2373,7 +2351,7 @@
       "__id__": 14
     },
     "targetInfo": {
-      "__id__": 91
+      "__id__": 90
     }
   },
   {
@@ -2385,22 +2363,22 @@
   {
     "__type__": "cc.SceneGlobals",
     "ambient": {
-      "__id__": 93
+      "__id__": 92
     },
     "shadows": {
-      "__id__": 94
+      "__id__": 93
     },
     "_skybox": {
-      "__id__": 95
+      "__id__": 94
     },
     "fog": {
-      "__id__": 96
+      "__id__": 95
     },
     "octree": {
-      "__id__": 97
+      "__id__": 96
     },
     "lightProbeInfo": {
-      "__id__": 98
+      "__id__": 97
     },
     "bakedWithStationaryMainLight": false,
     "bakedWithHighpLightmap": false

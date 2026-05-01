@@ -3,18 +3,24 @@ const { ccclass } = _decorator;
 
 @ccclass("Health")
 export class Health extends Component {
-    private _maxHealth     = 0;
+    private _maxHealth = 0;
     private _currentHealth = 0;
-    private _isAlive       = false;
+    private _isAlive = false;
 
-    get currentHealth(): number { return this._currentHealth; }
-    get maxHealth():     number { return this._maxHealth; }
-    get isAlive():       boolean { return this._isAlive; }
+    get currentHealth(): number {
+        return this._currentHealth;
+    }
+    get maxHealth(): number {
+        return this._maxHealth;
+    }
+    get isAlive(): boolean {
+        return this._isAlive;
+    }
 
     init(maxHealth: number): void {
-        this._maxHealth     = maxHealth;
+        this._maxHealth = maxHealth;
         this._currentHealth = maxHealth;
-        this._isAlive       = true;
+        this._isAlive = true;
         this.node.emit("health-changed", this._currentHealth, this._maxHealth);
     }
 

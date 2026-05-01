@@ -13,6 +13,6 @@ export abstract class PopupBase extends Component {
         this.node.active = false;
     }
 
-    protected onShow(): void {}   // Override nếu cần animation/data
+    protected onShow(): void {}
     protected onHide(): void {}
 }

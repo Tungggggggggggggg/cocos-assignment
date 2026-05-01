@@ -1,17 +1,23 @@
 import {
-    _decorator, Component, Vec3, Sprite,
-    Color, Collider2D, Contact2DType, IPhysics2DContact, math
+    _decorator,
+    Component,
+    Vec3,
+    Sprite,
+    Color,
+    Collider2D,
+    Contact2DType,
+    IPhysics2DContact,
+    math,
 } from "cc";
-import { Health }        from "../shared/Health";
+import { Health } from "../shared/Health";
 import { HealthBarView } from "../ui/hud/HealthBarView";
-import { GameBus }       from "../core/events/EventEmitter";
-import { GameConfig }    from "../data/GameConfig";
-import { EnemyData }     from "../data/EnemyData";
-import { Bullet }        from "../bullet/Bullet";
+import { GameBus } from "../core/events/EventEmitter";
+import { GameConfig } from "../data/GameConfig";
+import { EnemyData } from "../data/EnemyData";
+import { Bullet } from "../bullet/Bullet";
 
 const { ccclass, property, requireComponent } = _decorator;
 
-// Cache vector để không tạo mới mỗi frame
 const LEFT_DIR = new Vec3(-1, 0, 0);
 
 @ccclass("EnemyController")
@@ -20,32 +26,32 @@ export class EnemyController extends Component {
     @property(HealthBarView)
     private readonly healthBarView: HealthBarView | null = null;
 
-    private _data:     EnemyData | null = null;
-    private _health:   Health | null    = null;
+    private _data: EnemyData | null = null;
+    private _health: Health | null = null;
     private _collider: Collider2D | null = null;
-    private _sprite:   Sprite | null    = null;
+    private _sprite: Sprite | null = null;
 
-    private _speed    = 0;
+    private _speed = 0;
     private _isActive = false;
 
     private readonly _moveStep = new Vec3();
-    private readonly _nextPos  = new Vec3();
+    private readonly _nextPos = new Vec3();
 
     protected onLoad(): void {
-        this._health   = this.getComponent(Health);
+        this._health = this.getComponent(Health);
         this._collider = this.getComponent(Collider2D);
-        this._sprite   = this.getComponent(Sprite);
+        this._sprite = this.getComponent(Sprite);
     }
 
     protected onEnable(): void {
         this.node.on("health-changed", this._onHealthChanged, this);
-        this.node.on("died",           this._onDied,          this);
+        this.node.on("died", this._onDied, this);
         this._collider?.on(Contact2DType.BEGIN_CONTACT, this._onContact, this);
     }
 
     protected onDisable(): void {
         this.node.off("health-changed", this._onHealthChanged, this);
-        this.node.off("died",           this._onDied,          this);
+        this.node.off("died", this._onDied, this);
         this._collider?.off(Contact2DType.BEGIN_CONTACT, this._onContact, this);
     }
 
@@ -63,8 +69,8 @@ export class EnemyController extends Component {
     }
 
     public spawn(data: EnemyData, startPos: Vec3): void {
-        this._data     = data;
-        this._speed    = math.randomRange(data.speedMin, data.speedMax);
+        this._data = data;
+        this._speed = math.randomRange(data.speedMin, data.speedMax);
         this._isActive = true;
 
         this.node.setPosition(startPos);
@@ -83,7 +89,7 @@ export class EnemyController extends Component {
         this._isActive = false;
         GameBus.emit("enemy:died", {
             scoreValue: this._data?.scoreValue ?? 0,
-            position:   this.node.worldPosition,
+            position: this.node.worldPosition,
         });
         GameBus.emit("enemy:return", this.node);
     }
@@ -93,13 +99,9 @@ export class EnemyController extends Component {
         GameBus.emit("enemy:return", this.node);
     }
 
-    private _onContact(
-        _self: Collider2D,
-        other: Collider2D,
-    ): void {
+    private _onContact(_self: Collider2D, other: Collider2D): void {
         if (!this._health?.isAlive) return;
 
-        // Fix: cast rõ ràng thay vì dùng require()
         const bullet = other.node.getComponent(Bullet);
         if (bullet) {
             this._health.takeDamage(bullet.damage);
@@ -115,6 +117,10 @@ export class EnemyController extends Component {
         }, 0.1);
     }
 
-    onBorrow(): void { this.node.active = true; }
-    onReturn(): void { this.node.active = false; }
+    onBorrow(): void {
+        this.node.active = true;
+    }
+    onReturn(): void {
+        this.node.active = false;
+    }
 }

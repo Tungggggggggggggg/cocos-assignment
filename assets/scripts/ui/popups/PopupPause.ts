@@ -1,7 +1,7 @@
 import { _decorator, director } from "cc";
-import { PopupBase }     from "./PopupBase";
-import { GameBus }       from "../../core/events/EventEmitter";
-import { PopupManager }  from "../../managers/PopupManager";
+import { PopupBase } from "./PopupBase";
+import { GameBus } from "../../core/events/EventEmitter";
+import { PopupManager } from "../../managers/PopupManager";
 import { GlobalManager } from "../../managers/GlobalManager";
 const { ccclass } = _decorator;
 

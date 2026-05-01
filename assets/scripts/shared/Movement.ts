@@ -3,17 +3,16 @@ const { ccclass } = _decorator;
 
 @ccclass("Movement")
 export class Movement extends Component {
-    private _speed     = 0;
+    private _speed = 0;
     private _direction = new Vec3(-1, 0, 0);
-    private _active    = false;
+    private _active = false;
 
-    // Cache tránh allocation trong update
-    private readonly _step    = new Vec3();
+    private readonly _step = new Vec3();
     private readonly _nextPos = new Vec3();
 
     init(speed: number, direction: Vec3): void {
-        this._speed     = speed;
-        this._active    = true;
+        this._speed = speed;
+        this._active = true;
         Vec3.normalize(this._direction, direction);
     }
 

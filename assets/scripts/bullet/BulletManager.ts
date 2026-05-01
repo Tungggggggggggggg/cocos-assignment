@@ -1,10 +1,16 @@
 import {
-    _decorator, Component, Node, Prefab,
-    NodePool, instantiate, Vec3, UITransform,
+    _decorator,
+    Component,
+    Node,
+    Prefab,
+    NodePool,
+    instantiate,
+    Vec3,
+    UITransform,
 } from "cc";
-import { Bullet }         from "./Bullet";
+import { Bullet } from "./Bullet";
 import { BulletRegistry } from "../data/BulletData";
-import { GameBus }        from "../core/events/EventEmitter";
+import { GameBus } from "../core/events/EventEmitter";
 
 const { ccclass, property } = _decorator;
 
@@ -21,7 +27,10 @@ export class BulletManager extends Component {
     private readonly _pool = new NodePool("recycle");
 
     protected onLoad(): void {
-        if (BulletManager.instance) { this.node.destroy(); return; }
+        if (BulletManager.instance) {
+            this.node.destroy();
+            return;
+        }
         BulletManager.instance = this;
     }
 
@@ -46,13 +55,14 @@ export class BulletManager extends Component {
         }
         if (!this.bulletPrefab || !this.bulletContainer) return;
 
-        const node = this._pool.size() > 0
-            ? this._pool.get()
-            : instantiate(this.bulletPrefab);
+        const node =
+            this._pool.size() > 0
+                ? this._pool.get()
+                : instantiate(this.bulletPrefab);
 
         this.bulletContainer.addChild(node);
 
-        const ui       = this.bulletContainer.getComponent(UITransform)!;
+        const ui = this.bulletContainer.getComponent(UITransform)!;
         const localPos = ui.convertToNodeSpaceAR(worldPos);
 
         node.getComponent(Bullet)?.init(data, localPos, dir);

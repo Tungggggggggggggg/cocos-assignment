@@ -4,7 +4,7 @@ import { BulletManager } from "../bullet/BulletManager";
 import { MathUtils } from "../core/utils/MathUtils";
 
 export class SpreadGun extends WeaponBase {
-    readonly weaponId   = "spread";
+    readonly weaponId = "spread";
     readonly fireRateMs = 600;
 
     private readonly ANGLES = [-20, 0, 20];

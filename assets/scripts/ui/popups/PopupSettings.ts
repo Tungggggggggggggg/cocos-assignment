@@ -1,6 +1,6 @@
 import { _decorator, Component, Slider, Toggle } from "cc";
 import { PopupBase } from "./PopupBase";
-import { GameBus }   from "../../core/events/EventEmitter";
+import { GameBus } from "../../core/events/EventEmitter";
 const { ccclass, property } = _decorator;
 
 @ccclass("PopupSettings")
@@ -18,15 +18,15 @@ export class PopupSettings extends PopupBase {
     private readonly sfxToggle: Toggle | null = null;
 
     protected onEnable(): void {
-        this.bgmSlider?.node.on("slide",  this._onBgmSlide,   this);
-        this.sfxSlider?.node.on("slide",  this._onSfxSlide,   this);
-        this.bgmToggle?.node.on("toggle", this._onBgmToggle,  this);
-        this.sfxToggle?.node.on("toggle", this._onSfxToggle,  this);
+        this.bgmSlider?.node.on("slide", this._onBgmSlide, this);
+        this.sfxSlider?.node.on("slide", this._onSfxSlide, this);
+        this.bgmToggle?.node.on("toggle", this._onBgmToggle, this);
+        this.sfxToggle?.node.on("toggle", this._onSfxToggle, this);
     }
 
     protected onDisable(): void {
-        this.bgmSlider?.node.off("slide",  this._onBgmSlide,  this);
-        this.sfxSlider?.node.off("slide",  this._onSfxSlide,  this);
+        this.bgmSlider?.node.off("slide", this._onBgmSlide, this);
+        this.sfxSlider?.node.off("slide", this._onSfxSlide, this);
         this.bgmToggle?.node.off("toggle", this._onBgmToggle, this);
         this.sfxToggle?.node.off("toggle", this._onSfxToggle, this);
     }

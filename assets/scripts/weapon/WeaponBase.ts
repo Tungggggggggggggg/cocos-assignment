@@ -3,12 +3,11 @@ import { IWeapon } from "./IWeapon";
 import { Vec3 } from "cc";
 
 export abstract class WeaponBase implements IWeapon {
-    abstract readonly weaponId:   string;
+    abstract readonly weaponId: string;
     abstract readonly fireRateMs: number;
 
     private _lastFireTime = 0;
 
-    // Template Method Pattern: subclass chỉ override doFire()
     fire(origin: Vec3, direction: Vec3): void {
         const now = game.totalTime;
         if (now - this._lastFireTime < this.fireRateMs) return;

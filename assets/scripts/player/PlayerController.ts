@@ -1,10 +1,10 @@
 import { _decorator, Component, sp, Color } from "cc";
-import { PlayerInput }    from "./PlayerInput";
+import { PlayerInput } from "./PlayerInput";
 import { PlayerMovement } from "./PlayerMovement";
 import { WeaponController } from "../weapon/WeaponController";
-import { Health }         from "../shared/Health";
-import { GameBus }        from "../core/events/EventEmitter";
-import { GameConfig }     from "../data/GameConfig";
+import { Health } from "../shared/Health";
+import { GameBus } from "../core/events/EventEmitter";
+import { GameConfig } from "../data/GameConfig";
 
 const { ccclass, property, requireComponent } = _decorator;
 
@@ -16,43 +16,40 @@ export class PlayerController extends Component {
     @property(sp.Skeleton)
     private readonly spine: sp.Skeleton | null = null;
 
-    private _input:    PlayerInput      | null = null;
-    private _movement: PlayerMovement   | null = null;
-    private _weapon:   WeaponController | null = null;
-    private _health:   Health           | null = null;
+    private _input: PlayerInput | null = null;
+    private _movement: PlayerMovement | null = null;
+    private _weapon: WeaponController | null = null;
+    private _health: Health | null = null;
     private _isDead = false;
 
     protected onLoad(): void {
-        this._input    = this.getComponent(PlayerInput);
+        this._input = this.getComponent(PlayerInput);
         this._movement = this.getComponent(PlayerMovement);
-        this._weapon   = this.getComponent(WeaponController);
-        this._health   = this.getComponent(Health);
+        this._weapon = this.getComponent(WeaponController);
+        this._health = this.getComponent(Health);
         this._input?.setAlive(false);
     }
 
     protected onEnable(): void {
-        // Node events — từ sibling components
-        this.node.on("input:move",   this._onMove,   this);
-        this.node.on("input:shoot",  this._onShoot,  this);
+        this.node.on("input:move", this._onMove, this);
+        this.node.on("input:shoot", this._onShoot, this);
         this.node.on("health-changed", this._onHealthChanged, this);
-        this.node.on("died",           this._onDied,           this);
+        this.node.on("died", this._onDied, this);
 
-        // Global events — từ GameBus
-        GameBus.on("game:start",    this._onGameStart,  this);
-        GameBus.on("game:over",     this._onGameOver,   this);
-        GameBus.on("enemy:escaped", this._onEscaped,    this);
+        GameBus.on("game:start", this._onGameStart, this);
+        GameBus.on("game:over", this._onGameOver, this);
+        GameBus.on("enemy:escaped", this._onEscaped, this);
     }
 
     protected onDisable(): void {
-        this.node.off("input:move",    this._onMove,          this);
-        this.node.off("input:shoot",   this._onShoot,         this);
-        this.node.off("health-changed",this._onHealthChanged, this);
-        this.node.off("died",          this._onDied,          this);
+        this.node.off("input:move", this._onMove, this);
+        this.node.off("input:shoot", this._onShoot, this);
+        this.node.off("health-changed", this._onHealthChanged, this);
+        this.node.off("died", this._onDied, this);
 
         GameBus.offAll(this);
     }
 
-    // --- Game flow handlers ---
     private _onGameStart(): void {
         this._isDead = false;
         this._health?.init(GameConfig.PLAYER.MAX_HEALTH);
@@ -81,7 +78,6 @@ export class PlayerController extends Component {
         this._health?.takeDamage(GameConfig.ENEMY.ESCAPE_DAMAGE);
     }
 
-    // --- Node event handlers ---
     private _onMove(isMoving: boolean): void {
         if (!this.spine || this._isDead) return;
         const anim = isMoving ? "run" : "idle";

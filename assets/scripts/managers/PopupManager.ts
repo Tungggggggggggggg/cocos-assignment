@@ -1,6 +1,12 @@
 import {
-    _decorator, Component, Node, Prefab,
-    instantiate, director, Canvas, isValid,
+    _decorator,
+    Component,
+    Node,
+    Prefab,
+    instantiate,
+    director,
+    Canvas,
+    isValid,
 } from "cc";
 import { PopupGameOver } from "../ui/popups/PopupGameOver";
 const { ccclass, property } = _decorator;
@@ -19,8 +25,12 @@ export class PopupManager extends Component {
     private _gameOverNode: Node | null = null;
 
     protected onLoad(): void {
-        if (PopupManager.instance) { this.node.destroy(); return; }
+        if (PopupManager.instance) {
+            this.node.destroy();
+            return;
+        }
         PopupManager.instance = this;
+        director.addPersistRootNode(this.node);
     }
 
     protected onDestroy(): void {
@@ -52,10 +62,9 @@ export class PopupManager extends Component {
         this._gameOverNode.getComponent(PopupGameOver)?.show(score);
     }
 
-    // Tách việc tìm Canvas ra — không trải rộng khắp nơi
     private _getCanvas(): Node | null {
-        return director.getScene()
-            ?.getComponentInChildren(Canvas)
-            ?.node ?? null;
+        return (
+            director.getScene()?.getComponentInChildren(Canvas)?.node ?? null
+        );
     }
 }

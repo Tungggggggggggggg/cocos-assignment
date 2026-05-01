@@ -15,10 +15,10 @@ export class SoundManager extends Component {
     @property(AudioSource)
     private readonly coinSource: AudioSource | null = null;
 
-    private _bgmVolume  = 1.0;
-    private _sfxVolume  = 1.0;
-    private _bgmMuted   = false;
-    private _sfxMuted   = false;
+    private _bgmVolume = 1.0;
+    private _sfxVolume = 1.0;
+    private _bgmMuted = false;
+    private _sfxMuted = false;
 
     protected onLoad(): void {
         if (SoundManager.instance) {
@@ -33,14 +33,21 @@ export class SoundManager extends Component {
     }
 
     protected onEnable(): void {
-        GameBus.on("sound:bgm-volume", p => this._setBgmVolume(p.volume),  this);
-        GameBus.on("sound:sfx-volume", p => this._setSfxVolume(p.volume),  this);
-        GameBus.on("sound:bgm-mute",   p => this._muteBgm(p.muted),        this);
-        GameBus.on("sound:sfx-mute",   p => this._muteSfx(p.muted),        this);
-        GameBus.on("sound:play-sfx",   () => this._playSfx(),              this);
-        GameBus.on("sound:play-coin",  () => this._playCoin(),             this);
-        // Coin sound khi enemy chết
-        GameBus.on("enemy:died",       () => GameBus.emit("sound:play-coin"), this);
+        GameBus.on(
+            "sound:bgm-volume",
+            (p) => this._setBgmVolume(p.volume),
+            this,
+        );
+        GameBus.on(
+            "sound:sfx-volume",
+            (p) => this._setSfxVolume(p.volume),
+            this,
+        );
+        GameBus.on("sound:bgm-mute", (p) => this._muteBgm(p.muted), this);
+        GameBus.on("sound:sfx-mute", (p) => this._muteSfx(p.muted), this);
+        GameBus.on("sound:play-sfx", () => this._playSfx(), this);
+        GameBus.on("sound:play-coin", () => this._playCoin(), this);
+        GameBus.on("enemy:died", () => GameBus.emit("sound:play-coin"), this);
     }
 
     protected onDisable(): void {

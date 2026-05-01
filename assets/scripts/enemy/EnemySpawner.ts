@@ -1,4 +1,13 @@
-import { _decorator, Component, Prefab, Node, instantiate, Vec3, view, math } from "cc";
+import {
+    _decorator,
+    Component,
+    Prefab,
+    Node,
+    instantiate,
+    Vec3,
+    view,
+    math,
+} from "cc";
 import { EnemyController } from "./EnemyController";
 import { EnemyData, EnemyRegistry } from "../data/EnemyData";
 import { GameBus } from "../core/events/EventEmitter";
@@ -15,18 +24,18 @@ export class EnemySpawner extends Component {
     private readonly container: Node | null = null;
 
     private readonly _pool: EnemyController[] = [];
-    private _active     = false;
-    private _interval   = 0;
-    private _timer      = 0;
+    private _active = false;
+    private _interval = 0;
+    private _timer = 0;
 
     private readonly _spawnPos = new Vec3();
 
     protected onEnable(): void {
-        GameBus.on("player:ready",  this._onPlayerReady,  this);
-        GameBus.on("game:over",     this._onGameOver,      this);
-        GameBus.on("game:paused",   this._pause,           this);
-        GameBus.on("game:resumed",  this._resume,          this);
-        GameBus.on("enemy:return",  this._onReturnEnemy,   this);
+        GameBus.on("player:ready", this._onPlayerReady, this);
+        GameBus.on("game:over", this._onGameOver, this);
+        GameBus.on("game:paused", this._pause, this);
+        GameBus.on("game:resumed", this._resume, this);
+        GameBus.on("enemy:return", this._onReturnEnemy, this);
     }
 
     protected onDisable(): void {
@@ -48,19 +57,22 @@ export class EnemySpawner extends Component {
         this._timer = this._interval;
     }
 
-    // --- Private ---
     private _onPlayerReady(): void {
-        this._active   = true;
+        this._active = true;
         this._interval = GameConfig.ENEMY.INITIAL_SPAWN_INTERVAL;
-        this._timer    = this._interval;
+        this._timer = this._interval;
     }
 
     private _onGameOver(): void {
         this._active = false;
     }
 
-    private _pause  = (): void => { this._active = false; };
-    private _resume = (): void => { this._active = true; };
+    private _pause = (): void => {
+        this._active = false;
+    };
+    private _resume = (): void => {
+        this._active = true;
+    };
 
     private _spawnOne(): void {
         const data = this._pickEnemyData();
@@ -69,10 +81,10 @@ export class EnemySpawner extends Component {
 
         const vis = view.getVisibleSize();
         this._spawnPos.set(
-            vis.width  / 2 + GameConfig.ENEMY.SPAWN_OFFSET,
+            vis.width / 2 + GameConfig.ENEMY.SPAWN_OFFSET,
             math.randomRange(
                 -(vis.height / 2 - GameConfig.ENEMY.SPAWN_OFFSET),
-                  vis.height / 2 - GameConfig.ENEMY.SPAWN_OFFSET,
+                vis.height / 2 - GameConfig.ENEMY.SPAWN_OFFSET,
             ),
             0,
         );
@@ -80,7 +92,6 @@ export class EnemySpawner extends Component {
         ctrl.spawn(data, this._spawnPos);
     }
 
-    // Weighted random pick — thêm loại enemy mới không cần sửa hàm này
     private _pickEnemyData(): EnemyData {
         const total = EnemyRegistry.reduce((s, e) => s + e.spawnWeight, 0);
         let roll = Math.random() * total;

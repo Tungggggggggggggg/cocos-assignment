@@ -2,7 +2,7 @@ import { math, view } from "cc";
 
 export class MathUtils {
     static weightedRandom<T extends { spawnWeight: number }>(
-        items: readonly T[]
+        items: readonly T[],
     ): T {
         const total = items.reduce((s, i) => s + i.spawnWeight, 0);
         let roll = Math.random() * total;
