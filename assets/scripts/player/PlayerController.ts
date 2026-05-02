@@ -7,6 +7,8 @@ import { GameBus } from "../core/events/EventEmitter";
 import { GameConfig } from "../data/GameConfig";
 import { SpreadGun } from "../weapon/SpreadGun";
 import { BasicGun } from "../weapon/BasicGun";
+import { PierceGun } from "../weapon/PierceGun";
+import { IWeapon } from "../weapon/IWeapon";
 
 const { ccclass, property, requireComponent } = _decorator;
 
@@ -23,7 +25,13 @@ export class PlayerController extends Component {
     private _weapon: WeaponController | null = null;
     private _health: Health | null = null;
     private _isDead = false;
-    private _useSpread = false;
+
+    private _weaponIndex = 0;
+    private readonly _weaponFactory: Array<() => IWeapon> = [
+        () => new BasicGun(),
+        () => new SpreadGun(),
+        () => new PierceGun(),
+    ];
 
     protected onLoad(): void {
         this._input = this.getComponent(PlayerInput);
@@ -56,7 +64,9 @@ export class PlayerController extends Component {
 
     private _onGameStart(): void {
         this._isDead = false;
+        this._weaponIndex = 0;
         this._health?.init(GameConfig.PLAYER.MAX_HEALTH);
+        this._weapon?.equipWeapon(this._weaponFactory[0]());
 
         if (!this.spine) {
             this._input?.setAlive(true);
@@ -123,8 +133,15 @@ export class PlayerController extends Component {
 
     private _onWeaponSwap(): void {
         if (!this._weapon || this._isDead) return;
-        this._useSpread = !this._useSpread;
-        const next = this._useSpread ? new SpreadGun() : new BasicGun();
+
+        this._weaponIndex =
+            (this._weaponIndex + 1) % this._weaponFactory.length;
+        const next = this._weaponFactory[this._weaponIndex]();
         this._weapon.equipWeapon(next);
+
+        GameBus.emit("weapon:swapped", {
+            index: this._weaponIndex,
+            id: next.weaponId,
+        });
     }
 }

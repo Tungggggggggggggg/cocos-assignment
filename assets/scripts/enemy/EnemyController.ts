@@ -80,6 +80,11 @@ export class EnemyController extends Component {
         if (this._sprite) this._sprite.color = Color.WHITE;
     }
 
+    public takeDamageExternal(amount: number): void {
+        if (!this._health?.isAlive) return;
+        this._health.takeDamage(amount);
+    }
+
     private _onHealthChanged(current: number, max: number): void {
         this.healthBarView?.refresh(current, max);
         if (current < max) this._flashDamage();
@@ -108,7 +113,14 @@ export class EnemyController extends Component {
 
         const bullet = other.node.getComponent(Bullet);
         if (bullet) {
-            this._health.takeDamage(bullet.damage);
+            const dmg = bullet.damage;
+            this._health.takeDamage(dmg);
+
+            GameBus.emit("enemy:damage-taken", {
+                amount: dmg,
+                worldPosition: this.node.worldPosition.clone(),
+            });
+
             if (!bullet.isPiercing) bullet.recycle();
         }
     }

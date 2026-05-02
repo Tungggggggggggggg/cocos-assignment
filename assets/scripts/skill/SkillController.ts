@@ -1,17 +1,36 @@
-import { _decorator, Component, input, Input, EventKeyboard, KeyCode } from "cc";
+import { _decorator, Component, input, Input, EventKeyboard, KeyCode, Node, Prefab } from "cc";
 import { ISkill } from "./ISkill";
-import { DashSkill } from "./DashSkill";
+import { BombSkill } from "./BombSkill";
 import { GameBus } from "../core/events/EventEmitter";
 
-const { ccclass } = _decorator;
+const { ccclass, property } = _decorator;
 
 @ccclass("SkillController")
 export class SkillController extends Component {
+    @property(Node)
+    public bulletContainer: Node | null = null;
+
+    @property(Node)
+    public enemyContainer: Node | null = null;
+
+    @property(Prefab)
+    public bombPrefab: Prefab | null = null;
+
     private readonly _skills: Map<KeyCode, ISkill> = new Map();
     private _alive = false;
 
     protected onLoad(): void {
-        this._skills.set(KeyCode.KEY_Q, new DashSkill(this.node));
+        if (this.bulletContainer && this.enemyContainer && this.bombPrefab) {
+            this._skills.set(
+                KeyCode.KEY_Q,
+                new BombSkill(
+                    this.node,
+                    this.bulletContainer,
+                    this.enemyContainer,
+                    this.bombPrefab,
+                )
+            );
+        }
     }
 
     protected onEnable(): void {
@@ -19,6 +38,8 @@ export class SkillController extends Component {
         GameBus.on("player:ready", () => (this._alive = true), this);
         GameBus.on("game:over", () => (this._alive = false), this);
         GameBus.on("game:won", () => (this._alive = false), this);
+        GameBus.on("game:paused", () => (this._alive = false), this);
+        GameBus.on("game:resumed", () => (this._alive = true), this);
     }
 
     protected onDisable(): void {
@@ -26,10 +47,18 @@ export class SkillController extends Component {
         GameBus.offAll(this);
     }
 
-    protected update(dt: number): void {
-        if (!this._alive) return;
+    protected update(_dt: number): void {
         for (const skill of this._skills.values()) {
-            skill.update(dt);
+            skill.update(_dt);
+        }
+
+        const bomb = this._skills.get(KeyCode.KEY_Q);
+        if (bomb) {
+            GameBus.emit("skill:cooldown-update", {
+                skillId: bomb.skillId,
+                ratio: bomb.cooldownRatio,
+                cooldownMs: bomb.cooldownMs,
+            });
         }
     }
 

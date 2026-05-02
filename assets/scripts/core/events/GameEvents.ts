@@ -27,6 +27,14 @@ export interface GameEventMap {
     "sound:sfx-mute": { muted: boolean };
     "sound:play-sfx": void;
     "sound:play-coin": void;
+
+    "skill:cooldown-update": {
+        skillId: string;
+        ratio: number;
+        cooldownMs: number;
+    };
+    "enemy:damage-taken": { amount: number; worldPosition: Vec3 };
+    "weapon:swapped": { index: number; id: string };
 }
 
 export type GameEventKey = keyof GameEventMap;
