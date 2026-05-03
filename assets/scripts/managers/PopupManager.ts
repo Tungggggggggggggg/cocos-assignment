@@ -9,7 +9,6 @@ import {
     isValid,
 } from "cc";
 import { PopupGameOver } from "../ui/popups/PopupGameOver";
-import { PopupWinner } from "../ui/popups/PopupWinner";
 
 const { ccclass, property } = _decorator;
 
@@ -23,12 +22,9 @@ export class PopupManager extends Component {
     @property(Prefab)
     private readonly pfbGameOver: Prefab | null = null;
 
-    @property(Prefab)
-    private readonly pfbWinner: Prefab | null = null;
 
     private _settingsNode: Node | null = null;
     private _gameOverNode: Node | null = null;
-    private _winnerNode: Node | null = null;
 
     protected onLoad(): void {
         if (PopupManager.instance) {
@@ -68,16 +64,6 @@ export class PopupManager extends Component {
         this._gameOverNode.getComponent(PopupGameOver)?.show(score);
     }
 
-    showWinner(score: number): void {
-        const canvas = this._getCanvas();
-        if (!canvas || !this.pfbWinner) return;
-
-        if (!this._winnerNode || !isValid(this._winnerNode)) {
-            this._winnerNode = instantiate(this.pfbWinner);
-        }
-        this._winnerNode.parent = canvas;
-        this._winnerNode.getComponent(PopupWinner)?.show(score);
-    }
 
     private _getCanvas(): Node | null {
         return (

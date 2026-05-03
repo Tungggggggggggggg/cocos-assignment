@@ -6,7 +6,7 @@ export const GameConfig = {
         MAX_HEALTH: 100,
     },
     GAME: {
-        TIME_LIMIT_SECONDS: 30,
+        TIME_LIMIT_SECONDS: 61,
     },
     ENEMY: {
         DESPAWN_X: -1200,

@@ -84,6 +84,6 @@ export class GameManager extends Component {
     private _onGameWon(): void {
         this._active = false;
         director.pause();
-        PopupManager.instance?.showWinner(this.scoreManager?.score ?? 0);
+        PopupManager.instance?.showGameOver(this.scoreManager?.score ?? 0);
     }
 }
