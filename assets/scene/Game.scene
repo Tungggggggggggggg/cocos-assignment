@@ -767,7 +767,6 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "spine": null,
     "_id": "d10RbyGmlEtrhIhO4ahvZs"
   },
   {
@@ -2970,7 +2969,6 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "popupPause": null,
     "scoreManager": {
       "__id__": 104
     },

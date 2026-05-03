@@ -11,6 +11,7 @@ import {
 } from "cc";
 import { SkillBase } from "./SkillBase";
 import { GameBus } from "../core/events/EventEmitter";
+import { BombBehavior } from "./BombBehavior";
 import { EnemyController } from "../enemy/EnemyController";
 
 export class BombSkill extends SkillBase {
@@ -22,6 +23,7 @@ export class BombSkill extends SkillBase {
     private static readonly BLAST_RADIUS = 200;
     private static readonly BOMB_SPEED = 500;
     private static readonly FUSE_TIME_S = 2.0;
+    private static readonly MIN_DAMAGE_RATIO = 0.5;
 
     private readonly _playerNode: Node;
     private readonly _container: Node;
@@ -71,14 +73,13 @@ export class BombSkill extends SkillBase {
         const explode = () => {
             if (exploded || !bombNode.isValid) return;
             exploded = true;
-            if (rb) rb.linearVelocity = Vec2.ZERO;
             const worldPos = bombNode.worldPosition.clone();
-            bombNode.destroy();
             this._doExplosion(worldPos);
+            if (bombNode.isValid) bombNode.destroy();
         };
 
-        const timer = setTimeout(explode, BombSkill.FUSE_TIME_S * 1_000);
-        bombNode.once(Node.EventType.NODE_DESTROYED, () => clearTimeout(timer));
+        const behavior = bombNode.addComponent(BombBehavior);
+        behavior.setup(BombSkill.FUSE_TIME_S, explode);
 
         const col = bombNode.getComponent(Collider2D);
         if (col) {
@@ -102,7 +103,10 @@ export class BombSkill extends SkillBase {
             if (distSq > radiusSq) continue;
 
             const ratio = 1 - Math.sqrt(distSq) / BombSkill.BLAST_RADIUS;
-            const dmg = Math.round(BombSkill.BOMB_DAMAGE * (0.5 + ratio * 0.5));
+            const damageRatio =
+                BombSkill.MIN_DAMAGE_RATIO +
+                ratio * (1 - BombSkill.MIN_DAMAGE_RATIO);
+            const dmg = Math.round(BombSkill.BOMB_DAMAGE * damageRatio);
 
             ctrl.takeDamageExternal(dmg);
             GameBus.emit("enemy:damage-taken", {

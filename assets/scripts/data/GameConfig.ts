@@ -16,4 +16,12 @@ export const GameConfig = {
         SPAWN_DECREASE_RATE: 0.05,
         ESCAPE_DAMAGE: 10,
     },
+    LOADING: {
+        MESSAGES: [
+            "Đang triệu hồi tài nguyên...",
+            "Đang rèn vũ khí...",
+            "Đang chuẩn bị thế giới...",
+            "Sẵn sàng chiến đấu!",
+        ],
+    },
 } as const;

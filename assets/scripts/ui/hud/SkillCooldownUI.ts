@@ -14,10 +14,12 @@ export class SkillCooldownUI extends Component {
     @property(Sprite)
     public cooldownOverlay: Sprite | null = null;
 
+    private static readonly FILL_START_TOP = 0.75;
+
     protected onEnable(): void {
         if (this.cooldownOverlay) {
             this.cooldownOverlay.node.active = false;
-            this.cooldownOverlay.fillStart = 0.75;
+            this.cooldownOverlay.fillStart = SkillCooldownUI.FILL_START_TOP;
             this.cooldownOverlay.fillRange = 0;
         }
         if (this.countdownLabel) {
@@ -53,7 +55,7 @@ export class SkillCooldownUI extends Component {
         if (this.cooldownOverlay) {
             this.cooldownOverlay.node.active = onCooldown;
             if (onCooldown) {
-                this.cooldownOverlay.fillStart = 0.75;
+                this.cooldownOverlay.fillStart = SkillCooldownUI.FILL_START_TOP;
                 this.cooldownOverlay.fillRange = p.ratio;
             }
         }

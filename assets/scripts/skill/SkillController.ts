@@ -11,22 +11,23 @@ import {
 import { ISkill } from "./ISkill";
 import { BombSkill } from "./BombSkill";
 import { GameBus } from "../core/events/EventEmitter";
+import { InputConfig } from "../data/InputConfig";
 
 const { ccclass, property } = _decorator;
 
 @ccclass("SkillController")
 export class SkillController extends Component {
     @property(Node)
-    public playerNode: Node | null = null;
+    private readonly playerNode: Node | null = null;
 
     @property(Node)
-    public bulletContainer: Node | null = null;
+    private readonly bulletContainer: Node | null = null;
 
     @property(Node)
-    public enemyContainer: Node | null = null;
+    private readonly enemyContainer: Node | null = null;
 
     @property(Prefab)
-    public bombPrefab: Prefab | null = null;
+    private readonly bombPrefab: Prefab | null = null;
 
     private readonly _skills = new Map<KeyCode, ISkill>();
     private _alive = false;
@@ -85,7 +86,7 @@ export class SkillController extends Component {
             skill.update(dt);
         }
 
-        const bomb = this._skills.get(KeyCode.KEY_Q);
+        const bomb = this._skills.get(InputConfig.SKILL_BOMB);
         if (bomb) {
             GameBus.emit("skill:cooldown-update", {
                 skillId: bomb.skillId,
@@ -106,7 +107,7 @@ export class SkillController extends Component {
         }
 
         this._skills.set(
-            KeyCode.KEY_Q,
+            InputConfig.SKILL_BOMB,
             new BombSkill(
                 this.playerNode,
                 this.bulletContainer,
@@ -116,8 +117,8 @@ export class SkillController extends Component {
         );
     }
 
-    private _onKeyDown = (e: EventKeyboard): void => {
+    private _onKeyDown(e: EventKeyboard): void {
         if (!this._alive) return;
         this._skills.get(e.keyCode)?.activate();
-    };
+    }
 }

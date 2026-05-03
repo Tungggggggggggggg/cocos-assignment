@@ -7,6 +7,7 @@ import {
     KeyCode,
     Vec2,
 } from "cc";
+import { InputConfig } from "../data/InputConfig";
 const { ccclass } = _decorator;
 
 @ccclass("PlayerInput")
@@ -36,10 +37,10 @@ export class PlayerInput extends Component {
     private _onKeyDown(e: EventKeyboard): void {
         if (!this._alive) return;
         this._updateDir(e.keyCode, 1);
-        if (e.keyCode === KeyCode.SPACE) {
+        if (e.keyCode === InputConfig.SHOOT) {
             this.node.emit("input:shoot");
         }
-        if (e.keyCode === KeyCode.KEY_E) {
+        if (e.keyCode === InputConfig.WEAPON_SWAP) {
             this.node.emit("input:weapon-swap");
         }
     }
@@ -53,22 +54,22 @@ export class PlayerInput extends Component {
         let changed = false;
 
         switch (key) {
-            case KeyCode.KEY_W:
+            case InputConfig.MOVE_UP:
             case KeyCode.ARROW_UP:
                 this._moveDir.y = scale;
                 changed = true;
                 break;
-            case KeyCode.KEY_S:
+            case InputConfig.MOVE_DOWN:
             case KeyCode.ARROW_DOWN:
                 this._moveDir.y = -scale;
                 changed = true;
                 break;
-            case KeyCode.KEY_D:
+            case InputConfig.MOVE_RIGHT:
             case KeyCode.ARROW_RIGHT:
                 this._moveDir.x = scale;
                 changed = true;
                 break;
-            case KeyCode.KEY_A:
+            case InputConfig.MOVE_LEFT:
             case KeyCode.ARROW_LEFT:
                 this._moveDir.x = -scale;
                 changed = true;

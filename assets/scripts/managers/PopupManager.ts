@@ -22,7 +22,6 @@ export class PopupManager extends Component {
     @property(Prefab)
     private readonly pfbGameOver: Prefab | null = null;
 
-
     private _settingsNode: Node | null = null;
     private _gameOverNode: Node | null = null;
 
@@ -63,7 +62,6 @@ export class PopupManager extends Component {
         this._gameOverNode.parent = canvas;
         this._gameOverNode.getComponent(PopupGameOver)?.show(score);
     }
-
 
     private _getCanvas(): Node | null {
         return (

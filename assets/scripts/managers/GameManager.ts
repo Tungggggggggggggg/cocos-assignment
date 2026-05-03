@@ -3,15 +3,11 @@ import { GameBus } from "../core/events/EventEmitter";
 import { GameConfig } from "../data/GameConfig";
 import { PopupManager } from "./PopupManager";
 import { ScoreManager } from "./ScoreManager";
-import { PopupPause } from "../ui/popups/PopupPause";
 
 const { ccclass, property } = _decorator;
 
 @ccclass("GameManager")
 export class GameManager extends Component {
-    @property(PopupPause)
-    private readonly popupPause: PopupPause | null = null;
-
     @property(ScoreManager)
     private readonly scoreManager: ScoreManager | null = null;
 
@@ -66,7 +62,6 @@ export class GameManager extends Component {
 
     private _onPaused(): void {
         this._active = false;
-        this.popupPause?.show();
         director.pause();
     }
 

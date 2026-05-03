@@ -21,7 +21,6 @@ export class GameUI extends Component {
     private _currentScore = 0;
 
     protected onLoad(): void {
-        this._validateRefs();
         this._initDisplay();
     }
 
@@ -38,13 +37,6 @@ export class GameUI extends Component {
 
     public onPauseButtonClicked(): void {
         GameBus.emit("game:paused");
-    }
-
-    private _validateRefs(): void {
-        if (!this.timerLabel) return;
-        if (!this.healthLabel) return;
-        if (!this.healthBar) return;
-        if (!this.scoreLabel) return;
     }
 
     private _initDisplay(): void {

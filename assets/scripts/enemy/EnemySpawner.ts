@@ -93,13 +93,13 @@ export class EnemySpawner extends Component {
         this._timer = this._interval;
     }
 
-    private _onStop = (): void => {
+    private _onStop(): void {
         this._active = false;
-    };
+    }
 
-    private _onResume = (): void => {
+    private _onResume(): void {
         this._active = true;
-    };
+    }
 
     private _spawnOne(): void {
         const data = MathUtils.weightedRandom(EnemyRegistry as EnemyData[]);
@@ -128,14 +128,14 @@ export class EnemySpawner extends Component {
 
         this._nodeIdMap.set(node.uuid, enemyId);
         this.container.addChild(node);
-        node.active = true;
+        node.getComponent(EnemyController)?.onBorrow();
         return node;
     }
 
     private _onReturnEnemy(node: Node): void {
         if (!node?.isValid) return;
 
-        node.active = false;
+        node.getComponent(EnemyController)?.onReturn();
 
         const enemyId = this._nodeIdMap.get(node.uuid);
         if (!enemyId) return;

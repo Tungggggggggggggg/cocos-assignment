@@ -1,6 +1,15 @@
-import { _decorator, Component, ProgressBar, Label, math, Color, director } from "cc";
+import {
+    _decorator,
+    Component,
+    ProgressBar,
+    Label,
+    math,
+    Color,
+    director,
+} from "cc";
 import { GlobalManager } from "./GlobalManager";
 import { SceneName } from "../core/state/SceneName";
+import { GameConfig } from "../data/GameConfig";
 
 const { ccclass, property } = _decorator;
 
@@ -21,22 +30,6 @@ export class LoadingManager extends Component {
 
     private readonly _loadSpeed = 0.5;
     private readonly _tempColor = new Color();
-
-    private readonly _messages: readonly string[] = [
-        "Đang triệu hồi tài nguyên...",
-        "Đang rèn vũ khí...",
-        "Đang chuẩn bị thế giới...",
-        "Sẵn sàng chiến đấu!",
-    ];
-
-    protected start(): void {
-        if (!this.loadingBar || !this.loadingText) {
-            return;
-        }
-        this._progress = 0;
-        this._displayProgress = 0;
-        this._completed = false;
-    }
 
     protected update(dt: number): void {
         if (this._completed) return;
@@ -77,11 +70,12 @@ export class LoadingManager extends Component {
         }
 
         if (this.statusText) {
+            const messages = GameConfig.LOADING.MESSAGES;
             const idx = Math.min(
-                Math.floor(this._displayProgress * this._messages.length),
-                this._messages.length - 1,
+                Math.floor(this._displayProgress * messages.length),
+                messages.length - 1,
             );
-            this.statusText.string = this._messages[idx];
+            this.statusText.string = messages[idx];
         }
     }
 
