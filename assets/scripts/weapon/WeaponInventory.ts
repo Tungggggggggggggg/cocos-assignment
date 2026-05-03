@@ -15,6 +15,12 @@ export class WeaponInventory extends Component {
         this._weaponController = this.getComponent(WeaponController);
     }
 
+    protected start(): void {
+        if (!this._weaponController) {
+            this._weaponController = this.getComponent(WeaponController);
+        }
+    }
+
     protected onEnable(): void {
         this.node.on("input:weapon-swap", this.nextWeapon, this);
     }
@@ -24,6 +30,9 @@ export class WeaponInventory extends Component {
     }
 
     public init(): void {
+        if (!this._weaponController) {
+            this._weaponController = this.getComponent(WeaponController);
+        }
         this._currentIndex = 0;
         this._equipCurrent();
     }
@@ -38,6 +47,11 @@ export class WeaponInventory extends Component {
         if (!factory) return;
 
         const weapon = factory();
+
+        if (!this._weaponController) {
+            this._weaponController = this.getComponent(WeaponController);
+        }
+
         this._weaponController?.equipWeapon(weapon);
 
         GameBus.emit("weapon:swapped", {

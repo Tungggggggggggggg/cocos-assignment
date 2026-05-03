@@ -1,20 +1,33 @@
 import { _decorator, Component, sp, Color } from "cc";
 
-const { ccclass, property } = _decorator;
+const { ccclass } = _decorator;
 
 @ccclass("PlayerAnimator")
 export class PlayerAnimator extends Component {
-    @property(sp.Skeleton)
-    private readonly spine: sp.Skeleton | null = null;
+    // Không dùng @property vì component này được mount động vào scene
+    // spine sẽ được lấy tự động qua getComponent trong onLoad
+    private _spine: sp.Skeleton | null = null;
+
+    protected onLoad(): void {
+        this._spine = this.getComponent(sp.Skeleton);
+        if (!this._spine) {
+            // Thử lấy từ node con
+            this._spine = this.node.getComponentInChildren(sp.Skeleton);
+        }
+    }
 
     public playAnimation(
         name: string,
         loop: boolean = true,
         track: number = 0,
     ): number {
-        if (!this.spine) return 0;
-        const entry = this.spine.setAnimation(track, name, loop);
-        return entry?.animation.duration ?? 0;
+        if (!this._spine) return 0;
+        try {
+            const entry = this._spine.setAnimation(track, name, loop);
+            return entry?.animation?.duration ?? 0;
+        } catch (e) {
+            return 0;
+        }
     }
 
     public addAnimation(
@@ -23,19 +36,21 @@ export class PlayerAnimator extends Component {
         track: number = 0,
         delay: number = 0,
     ): void {
-        if (!this.spine) return;
-        this.spine.addAnimation(track, name, loop, delay);
+        if (!this._spine) return;
+        try {
+            this._spine.addAnimation(track, name, loop, delay);
+        } catch (e) {}
     }
 
     public setFlash(color: Color, duration: number): void {
-        if (!this.spine) return;
-        this.spine.color = color;
+        if (!this._spine) return;
+        this._spine.color = color;
         this.scheduleOnce(() => {
-            if (this.spine?.isValid) this.spine.color = Color.WHITE;
+            if (this._spine?.isValid) this._spine.color = Color.WHITE;
         }, duration);
     }
 
     public get animationName(): string | undefined {
-        return this.spine?.animation;
+        return this._spine?.animation;
     }
 }

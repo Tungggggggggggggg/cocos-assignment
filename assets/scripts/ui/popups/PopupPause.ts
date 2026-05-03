@@ -8,8 +8,13 @@ const { ccclass } = _decorator;
 
 @ccclass("PopupPause")
 export class PopupPause extends PopupBase {
-    protected onEnable(): void {
+
+    protected onLoad(): void {
         GameBus.on("game:paused", this._onGamePaused, this);
+    }
+
+    protected onDestroy(): void {
+        GameBus.offAll(this);
     }
 
     private _onGamePaused(): void {

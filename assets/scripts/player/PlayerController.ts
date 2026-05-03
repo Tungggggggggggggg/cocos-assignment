@@ -31,6 +31,14 @@ export class PlayerController extends Component {
         this._input?.setAlive(false);
     }
 
+    protected start(): void {
+        if (!this._input) this._input = this.getComponent(PlayerInput);
+        if (!this._animator) this._animator = this.getComponent(PlayerAnimator);
+        if (!this._inventory)
+            this._inventory = this.getComponent(WeaponInventory);
+        if (!this._health) this._health = this.getComponent(Health);
+    }
+
     protected onEnable(): void {
         this.node.on("input:move", this._onMove, this);
         this.node.on("input:shoot", this._onShoot, this);
@@ -43,6 +51,11 @@ export class PlayerController extends Component {
     }
 
     protected onDisable(): void {
+        this.node.off("input:move", this._onMove, this);
+        this.node.off("input:shoot", this._onShoot, this);
+        this.node.off("health-changed", this._onHealthChanged, this);
+        this.node.off("died", this._onDied, this);
+
         GameBus.offAll(this);
     }
 
@@ -60,10 +73,13 @@ export class PlayerController extends Component {
         const duration = this._animator.playAnimation("portal", false);
         this._animator.addAnimation("idle", true, 0, 0);
 
-        this.scheduleOnce(() => {
-            this._input?.setAlive(true);
-            GameBus.emit("player:ready");
-        }, duration);
+        this.scheduleOnce(
+            () => {
+                this._input?.setAlive(true);
+                GameBus.emit("player:ready");
+            },
+            duration > 0 ? duration : 0.1,
+        );
     }
 
     private _onGameOver(): void {
@@ -101,6 +117,9 @@ export class PlayerController extends Component {
         this._input?.setAlive(false);
 
         const duration = this._animator?.playAnimation("death", false) ?? 0;
-        this.scheduleOnce(() => GameBus.emit("game:over"), duration);
+        this.scheduleOnce(
+            () => GameBus.emit("game:over"),
+            duration > 0 ? duration : 0.5,
+        );
     }
 }
