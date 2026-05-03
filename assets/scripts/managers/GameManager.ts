@@ -78,14 +78,12 @@ export class GameManager extends Component {
     private _onGameOver(): void {
         this._active = false;
         director.pause();
-        const score = this.scoreManager?.score ?? 0;
-        PopupManager.instance?.showGameOver(score);
+        PopupManager.instance?.showGameOver(this.scoreManager?.score ?? 0);
     }
 
     private _onGameWon(): void {
         this._active = false;
         director.pause();
-        const score = this.scoreManager?.score ?? 0;
-        PopupManager.instance?.showWinner(score);
+        PopupManager.instance?.showWinner(this.scoreManager?.score ?? 0);
     }
 }

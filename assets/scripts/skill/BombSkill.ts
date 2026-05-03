@@ -44,7 +44,6 @@ export class BombSkill extends SkillBase {
     protected onActivate(): void {
         const bombNode = instantiate(this._bombPrefab);
         if (!bombNode) {
-            console.error("[BombSkill] instantiate failed");
             return;
         }
 
@@ -64,10 +63,6 @@ export class BombSkill extends SkillBase {
         if (rb) {
             rb.wakeUp();
             rb.linearVelocity = new Vec2(dirX * BombSkill.BOMB_SPEED, 0);
-        } else {
-            console.warn(
-                "[BombSkill] No RigidBody2D on bomb prefab — bomb will not move",
-            );
         }
 
         GameBus.emit("sound:play-sfx");

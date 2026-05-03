@@ -102,10 +102,6 @@ export class SkillController extends Component {
             !this.enemyContainer ||
             !this.bombPrefab
         ) {
-            console.warn(
-                "[SkillController] Missing references. " +
-                    "Assign playerNode / bulletContainer / enemyContainer / bombPrefab in the Inspector.",
-            );
             return;
         }
 

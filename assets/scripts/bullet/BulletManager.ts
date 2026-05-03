@@ -50,7 +50,6 @@ export class BulletManager extends Component {
     spawn(bulletId: string, worldPos: Vec3, dir: Vec3): void {
         const data = BulletRegistry[bulletId];
         if (!data) {
-            console.error(`[BulletManager] Unknown bulletId: ${bulletId}`);
             return;
         }
         if (!this.bulletPrefab || !this.bulletContainer) return;

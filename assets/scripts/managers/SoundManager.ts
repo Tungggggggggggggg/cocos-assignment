@@ -22,7 +22,8 @@ export class SoundManager extends Component {
 
     protected onLoad(): void {
         if (SoundManager.instance) {
-            throw new Error("[SoundManager] Duplicate instance detected.");
+            this.node.destroy();
+            return;
         }
         SoundManager.instance = this;
         director.addPersistRootNode(this.node);

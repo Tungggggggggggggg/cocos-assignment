@@ -1,4 +1,4 @@
-import { Vec3 } from "cc";
+import { Vec3, Node } from "cc";
 
 export interface GameEventMap {
     "game:start": void;
@@ -14,8 +14,8 @@ export interface GameEventMap {
     "enemy:escaped": void;
     "enemy:died": { scoreValue: number; position: Vec3 };
 
-    "bullet:return": import("cc").Node;
-    "enemy:return": import("cc").Node;
+    "bullet:return": Node;
+    "enemy:return": Node;
 
     "score:add": { points: number };
 

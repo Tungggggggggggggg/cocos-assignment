@@ -41,14 +41,10 @@ export class GameUI extends Component {
     }
 
     private _validateRefs(): void {
-        if (!this.timerLabel)
-            console.error("[GameUI] timerLabel is not assigned.");
-        if (!this.healthLabel)
-            console.error("[GameUI] healthLabel is not assigned.");
-        if (!this.healthBar)
-            console.error("[GameUI] healthBar is not assigned.");
-        if (!this.scoreLabel)
-            console.error("[GameUI] scoreLabel is not assigned.");
+        if (!this.timerLabel) return;
+        if (!this.healthLabel) return;
+        if (!this.healthBar) return;
+        if (!this.scoreLabel) return;
     }
 
     private _initDisplay(): void {

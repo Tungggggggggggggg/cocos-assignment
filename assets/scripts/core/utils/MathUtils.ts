@@ -1,4 +1,4 @@
-import { math, view } from "cc";
+import { view } from "cc";
 
 export class MathUtils {
     static weightedRandom<T extends { spawnWeight: number }>(

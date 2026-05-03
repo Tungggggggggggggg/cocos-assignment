@@ -35,9 +35,6 @@ export class DamageNumberManager extends Component {
 
         const comp = node.getComponent(DamageNumber);
         if (!comp) {
-            console.error(
-                "[DamageNumberManager] DamageNumber component not found on prefab root!",
-            );
             return;
         }
 

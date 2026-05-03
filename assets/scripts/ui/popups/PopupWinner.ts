@@ -20,11 +20,11 @@ export class PopupWinner extends PopupBase {
 
     onRestartButtonClicked(): void {
         director.resume();
-        GlobalManager.instance?.loadGame();
+        GlobalManager.instance?.onReplayRequested();
     }
 
     onLobbyButtonClicked(): void {
         director.resume();
-        GlobalManager.instance?.loadLobby();
+        GlobalManager.instance?.onQuitToLobbyRequested();
     }
 }
