@@ -42,10 +42,20 @@ export class BombSkill extends SkillBase {
     }
 
     protected onActivate(): void {
+        if (!this._container || !this._bombPrefab) {
+            console.error("[BombSkill] container hoặc bombPrefab bị null!");
+            return;
+        }
+
         const dirX = this._playerNode.scale.x > 0 ? 1 : -1;
         const origin = this._playerNode.worldPosition.clone();
 
         const bombNode = instantiate(this._bombPrefab);
+        if (!bombNode) {
+            console.error("[BombSkill] instantiate thất bại!");
+            return;
+        }
+
         this._container.addChild(bombNode);
         bombNode.active = true;
 
@@ -57,6 +67,10 @@ export class BombSkill extends SkillBase {
         if (rb) {
             rb.wakeUp();
             rb.linearVelocity = new Vec2(dirX * BombSkill.BOMB_SPEED, 0);
+        } else {
+            console.warn(
+                "[BombSkill] Không tìm thấy RigidBody2D trên bomb prefab!",
+            );
         }
 
         GameBus.emit("sound:play-sfx");

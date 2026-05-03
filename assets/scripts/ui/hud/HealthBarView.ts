@@ -6,7 +6,6 @@ export class HealthBarView extends Component {
     @property(ProgressBar)
     private readonly bar: ProgressBar | null = null;
 
-    /** Optional label to show "current/max" above the bar */
     @property(Label)
     private readonly hpLabel: Label | null = null;
 
@@ -15,7 +14,7 @@ export class HealthBarView extends Component {
             this.bar.progress = math.clamp01(current / max);
         }
         if (this.hpLabel) {
-            this.hpLabel.string = `${Math.max(0, Math.ceil(current))}/${max}`;
+            this.hpLabel.string = `${Math.max(0, Math.ceil(current))}`;
         }
     }
 }

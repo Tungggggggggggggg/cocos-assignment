@@ -4,7 +4,6 @@ export interface EnemyData {
     readonly speedMin: number;
     readonly speedMax: number;
     readonly scoreValue: number;
-    readonly damage: number;
     readonly spawnWeight: number;
 }
 
@@ -15,7 +14,6 @@ export const EnemyRegistry: readonly EnemyData[] = [
         speedMin: 150,
         speedMax: 250,
         scoreValue: 10,
-        damage: 20,
         spawnWeight: 70,
     },
     {
@@ -24,7 +22,6 @@ export const EnemyRegistry: readonly EnemyData[] = [
         speedMin: 300,
         speedMax: 450,
         scoreValue: 15,
-        damage: 15,
         spawnWeight: 20,
     },
     {
@@ -33,7 +30,6 @@ export const EnemyRegistry: readonly EnemyData[] = [
         speedMin: 80,
         speedMax: 120,
         scoreValue: 30,
-        damage: 35,
         spawnWeight: 10,
     },
 ] as const;

@@ -1,4 +1,12 @@
-import { _decorator, Component, Label, Vec3, tween, UIOpacity } from "cc";
+import {
+    _decorator,
+    Component,
+    Label,
+    Vec3,
+    tween,
+    UIOpacity,
+    UITransform,
+} from "cc";
 const { ccclass, property } = _decorator;
 
 @ccclass("DamageNumber")
@@ -15,15 +23,24 @@ export class DamageNumber extends Component {
             this.label.string = `-${amount}`;
         }
 
-        // Convert world → local (parent must be same canvas-space node)
-        this.node.setWorldPosition(worldPos);
-
-        // Animate: float up + fade out
-        const startPos = this.node.position.clone();
-        const endPos = new Vec3(startPos.x, startPos.y + 80, startPos.z);
+        const parent = this.node.parent;
+        if (parent) {
+            const ui = parent.getComponent(UITransform);
+            if (ui) {
+                const localPos = ui.convertToNodeSpaceAR(worldPos);
+                this.node.setPosition(localPos);
+            } else {
+                this.node.setWorldPosition(worldPos);
+            }
+        } else {
+            this.node.setWorldPosition(worldPos);
+        }
 
         const opacity = this.node.getComponent(UIOpacity);
         if (opacity) opacity.opacity = 255;
+
+        const startPos = this.node.position.clone();
+        const endPos = new Vec3(startPos.x, startPos.y + 80, startPos.z);
 
         tween(this.node)
             .to(0.6, { position: endPos }, { easing: "quadOut" })
