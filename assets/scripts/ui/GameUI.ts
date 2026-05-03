@@ -1,26 +1,28 @@
 import { _decorator, Component, Label, ProgressBar } from "cc";
 import { GameBus } from "../core/events/EventEmitter";
+import { GameConfig } from "../data/GameConfig";
 
 const { ccclass, property } = _decorator;
 
 @ccclass("GameUI")
 export class GameUI extends Component {
     @property(Label)
-    private readonly timerLabel: Label | null = null;
+    public timerLabel: Label | null = null;
 
     @property(Label)
-    private readonly healthLabel: Label | null = null;
+    public healthLabel: Label | null = null;
 
     @property(ProgressBar)
-    private readonly healthBar: ProgressBar | null = null;
+    public healthBar: ProgressBar | null = null;
 
     @property(Label)
-    private readonly scoreLabel: Label | null = null;
+    public scoreLabel: Label | null = null;
+
+    private _currentScore = 0;
 
     protected onLoad(): void {
-        if (!this.timerLabel || !this.healthLabel || !this.healthBar) {
-            throw new Error("[GameUI] Missing required UI references.");
-        }
+        this._validateRefs();
+        this._initDisplay();
     }
 
     protected onEnable(): void {
@@ -38,16 +40,48 @@ export class GameUI extends Component {
         GameBus.emit("game:paused");
     }
 
-    private _currentScore = 0;
+    private _validateRefs(): void {
+        if (!this.timerLabel)
+            console.error("[GameUI] timerLabel is not assigned.");
+        if (!this.healthLabel)
+            console.error("[GameUI] healthLabel is not assigned.");
+        if (!this.healthBar)
+            console.error("[GameUI] healthBar is not assigned.");
+        if (!this.scoreLabel)
+            console.error("[GameUI] scoreLabel is not assigned.");
+    }
+
+    private _initDisplay(): void {
+        this._currentScore = 0;
+        this._refreshScore();
+        this._refreshHealth(
+            GameConfig.PLAYER.MAX_HEALTH,
+            GameConfig.PLAYER.MAX_HEALTH,
+        );
+        this._refreshTimer(GameConfig.GAME.TIME_LIMIT_SECONDS);
+    }
 
     private _onGameStart(): void {
         this._currentScore = 0;
         this._refreshScore();
+        this._refreshHealth(
+            GameConfig.PLAYER.MAX_HEALTH,
+            GameConfig.PLAYER.MAX_HEALTH,
+        );
+        this._refreshTimer(GameConfig.GAME.TIME_LIMIT_SECONDS);
     }
 
     private _onScoreAdd(p: { points: number }): void {
         this._currentScore += p.points;
         this._refreshScore();
+    }
+
+    private _onHealthChanged(p: { current: number; max: number }): void {
+        this._refreshHealth(p.current, p.max);
+    }
+
+    private _onTimeTick(p: { secondsLeft: number }): void {
+        this._refreshTimer(p.secondsLeft);
     }
 
     private _refreshScore(): void {
@@ -56,19 +90,19 @@ export class GameUI extends Component {
         }
     }
 
-    private _onHealthChanged(p: { current: number; max: number }): void {
+    private _refreshHealth(current: number, max: number): void {
         if (this.healthLabel) {
-            this.healthLabel.string = `HP: ${p.current}/${p.max}`;
+            this.healthLabel.string = `HP: ${Math.max(0, current)}/${max}`;
         }
         if (this.healthBar) {
-            this.healthBar.progress = p.current / p.max;
+            this.healthBar.progress = max > 0 ? current / max : 0;
         }
     }
 
-    private _onTimeTick(p: { secondsLeft: number }): void {
+    private _refreshTimer(seconds: number): void {
         if (!this.timerLabel) return;
-        const m = Math.floor(p.secondsLeft / 60);
-        const s = Math.floor(p.secondsLeft % 60);
+        const m = Math.floor(seconds / 60);
+        const s = Math.floor(seconds % 60);
         this.timerLabel.string = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
     }
 }

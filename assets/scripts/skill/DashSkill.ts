@@ -31,11 +31,7 @@ export class DashSkill extends SkillBase {
         );
 
         tween(this._playerNode)
-            .to(
-                this.DASH_DURATION,
-                { position: target },
-                { easing: "quadOut" },
-            )
+            .to(this.DASH_DURATION, { position: target }, { easing: "quadOut" })
             .call(() => {
                 this._isDashing = false;
                 GameBus.emit("sound:play-sfx");
@@ -43,6 +39,5 @@ export class DashSkill extends SkillBase {
             .start();
     }
 
-    protected onCooldownEnd(): void {
-    }
+    protected onCooldownEnd(): void {}
 }
