@@ -4,14 +4,11 @@ const { ccclass } = _decorator;
 
 @ccclass("PlayerAnimator")
 export class PlayerAnimator extends Component {
-    // Không dùng @property vì component này được mount động vào scene
-    // spine sẽ được lấy tự động qua getComponent trong onLoad
     private _spine: sp.Skeleton | null = null;
 
     protected onLoad(): void {
         this._spine = this.getComponent(sp.Skeleton);
         if (!this._spine) {
-            // Thử lấy từ node con
             this._spine = this.node.getComponentInChildren(sp.Skeleton);
         }
     }

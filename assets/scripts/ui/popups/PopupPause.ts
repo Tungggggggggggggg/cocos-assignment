@@ -21,16 +21,16 @@ export class PopupPause extends PopupBase {
         this.show();
     }
 
-    onResumeButtonClicked(): void {
+    public onResumeButtonClicked(): void {
         this.hide();
         GameBus.emit("game:resumed");
     }
 
-    onSettingsButtonClicked(): void {
+    public onSettingsButtonClicked(): void {
         PopupManager.instance?.showSettings();
     }
 
-    onQuitButtonClicked(): void {
+    public onQuitButtonClicked(): void {
         director.resume();
         GlobalManager.instance?.onQuitToLobbyRequested();
     }

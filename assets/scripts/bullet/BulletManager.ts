@@ -16,7 +16,6 @@ const { ccclass, property } = _decorator;
 
 @ccclass("BulletManager")
 export class BulletManager extends Component {
-
     public static instance: BulletManager | null = null;
 
     @property(Prefab)

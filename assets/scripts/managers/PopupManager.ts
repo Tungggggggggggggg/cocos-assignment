@@ -38,7 +38,7 @@ export class PopupManager extends Component {
         if (PopupManager.instance === this) PopupManager.instance = null;
     }
 
-    showSettings(): void {
+    public showSettings(): void {
         const canvas = this._getCanvas();
         if (!canvas) return;
 
@@ -52,7 +52,7 @@ export class PopupManager extends Component {
         canvas.addChild(this._settingsNode);
     }
 
-    showGameOver(score: number): void {
+    public showGameOver(score: number): void {
         const canvas = this._getCanvas();
         if (!canvas || !this.pfbGameOver) return;
 

@@ -36,6 +36,10 @@ export class GameUI extends Component {
     }
 
     public onPauseButtonClicked(): void {
+        const popupPause = this.node.getChildByName("PopupPause");
+        if (popupPause) {
+            popupPause.active = true;
+        }
         GameBus.emit("game:paused");
     }
 
