@@ -18,8 +18,6 @@ import { Bullet } from "../bullet/Bullet";
 
 const { ccclass, property, requireComponent } = _decorator;
 
-const LEFT_DIR = new Vec3(-1, 0, 0);
-
 @ccclass("EnemyController")
 @requireComponent(Health)
 export class EnemyController extends Component {
@@ -36,6 +34,7 @@ export class EnemyController extends Component {
 
     private readonly _moveStep = new Vec3();
     private readonly _nextPos = new Vec3();
+    private static readonly LEFT_DIR = new Vec3(-1, 0, 0);
 
     protected onLoad(): void {
         this._health = this.getComponent(Health);
@@ -58,7 +57,11 @@ export class EnemyController extends Component {
     protected update(dt: number): void {
         if (!this._isActive) return;
 
-        Vec3.multiplyScalar(this._moveStep, LEFT_DIR, this._speed * dt);
+        Vec3.multiplyScalar(
+            this._moveStep,
+            EnemyController.LEFT_DIR,
+            this._speed * dt,
+        );
         Vec3.add(this._nextPos, this.node.position, this._moveStep);
         this.node.setPosition(this._nextPos);
 

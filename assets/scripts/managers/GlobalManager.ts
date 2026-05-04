@@ -40,7 +40,7 @@ export class GlobalManager extends Component implements AppFsmCallbacks {
         }
     }
 
-    onEnterLoading(
+    public onEnterLoading(
         transition: AppTransitionKey,
         _from: AppState,
         _to: AppState,
@@ -64,7 +64,7 @@ export class GlobalManager extends Component implements AppFsmCallbacks {
         }
     }
 
-    onEnterLobby(
+    public onEnterLobby(
         _transition: AppTransitionKey,
         _from: AppState,
         _to: AppState,
@@ -76,7 +76,7 @@ export class GlobalManager extends Component implements AppFsmCallbacks {
         }
     }
 
-    onEnterGame(
+    public onEnterGame(
         _transition: AppTransitionKey,
         _from: AppState,
         _to: AppState,
