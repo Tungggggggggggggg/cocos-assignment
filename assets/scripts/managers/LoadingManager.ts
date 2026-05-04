@@ -1,5 +1,16 @@
-import { _decorator, Component, ProgressBar, Label, math, Color } from "cc";
+import {
+    _decorator,
+    Component,
+    ProgressBar,
+    Label,
+    math,
+    Color,
+    director,
+} from "cc";
 import { GlobalManager } from "./GlobalManager";
+import { SceneName } from "../core/state/SceneName";
+import { GameConfig } from "../data/GameConfig";
+
 const { ccclass, property } = _decorator;
 
 @ccclass("LoadingManager")
@@ -13,32 +24,17 @@ export class LoadingManager extends Component {
     @property(Label)
     private readonly statusText: Label | null = null;
 
-    private _progress: number = 0;
-    private _displayProgress: number = 0;
-    private readonly _loadSpeed: number = 0.5;
-    private readonly _tempColor: Color = new Color();
+    private _progress = 0;
+    private _displayProgress = 0;
+    private _completed = false;
 
-    private readonly _messages: string[] = [
-        "Đang triệu hồi tài nguyên...",
-        "Đang rèn vũ khí...",
-        "Đang chuẩn bị thế giới...",
-        "Sẵn sàng chiến đấu!",
-    ];
-
-    protected start(): void {
-        if (!this.loadingBar || !this.loadingText) {
-            throw new Error("[LoadingManager] Missing UI references!");
-        }
-        this._progress = 0;
-        this._displayProgress = 0;
-    }
+    private readonly _loadSpeed = 0.5;
+    private readonly _tempColor = new Color();
 
     protected update(dt: number): void {
-        if (this._progress < 1) {
-            this._progress = math.clamp01(
-                this._progress + dt * this._loadSpeed,
-            );
-        }
+        if (this._completed) return;
+
+        this._progress = math.clamp01(this._progress + dt * this._loadSpeed);
 
         this._displayProgress = math.lerp(
             this._displayProgress,
@@ -46,41 +42,54 @@ export class LoadingManager extends Component {
             dt * 8,
         );
 
-        if (this.loadingBar) {
-            this.loadingBar.progress = this._displayProgress;
+        this._updateBar();
+        this._updateText();
 
-            const barSprite = this.loadingBar.barSprite;
-            if (barSprite) {
-                const alpha = 180 + Math.sin(Date.now() / 150) * 75;
-                this._tempColor.set(barSprite.color);
-                this._tempColor.a = alpha;
-                barSprite.color = this._tempColor;
-            }
+        if (this._displayProgress >= 0.99 && this._progress >= 1) {
+            this._onComplete();
         }
+    }
 
+    private _updateBar(): void {
+        if (!this.loadingBar) return;
+
+        this.loadingBar.progress = this._displayProgress;
+
+        const barSprite = this.loadingBar.barSprite;
+        if (barSprite) {
+            const alpha = 180 + Math.sin(Date.now() / 150) * 75;
+            this._tempColor.set(barSprite.color);
+            this._tempColor.a = alpha;
+            barSprite.color = this._tempColor;
+        }
+    }
+
+    private _updateText(): void {
         if (this.loadingText) {
             this.loadingText.string = `${Math.floor(this._displayProgress * 100)}%`;
         }
 
         if (this.statusText) {
-            const msgIndex = Math.min(
-                Math.floor(this._displayProgress * this._messages.length),
-                this._messages.length - 1,
+            const messages = GameConfig.LOADING.MESSAGES;
+            const idx = Math.min(
+                Math.floor(this._displayProgress * messages.length),
+                messages.length - 1,
             );
-            this.statusText.string = this._messages[msgIndex];
-        }
-
-        if (this._displayProgress >= 0.99 && this._progress >= 1) {
-            this.onLoadingComplete();
+            this.statusText.string = messages[idx];
         }
     }
 
-    private onLoadingComplete(): void {
+    private _onComplete(): void {
+        this._completed = true;
         this.enabled = false;
+
         this.scheduleOnce(() => {
-            if (GlobalManager.instance) {
-                GlobalManager.instance.loadLobby();
+            const gm = GlobalManager.instance;
+            if (!gm) {
+                director.loadScene(SceneName.Lobby);
+                return;
             }
+            gm.onLoadingComplete();
         }, 0.5);
     }
 }

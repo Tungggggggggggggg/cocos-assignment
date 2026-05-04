@@ -1,93 +1,84 @@
 import { _decorator, Component, director } from "cc";
-import { EventManager } from "./EventManager";
-import { EventName, GameConfig } from "../configs/GameConfig";
-import { PopupPause } from "../components/PopupPause";
+import { GameBus } from "../core/events/EventEmitter";
+import { GameConfig } from "../data/GameConfig";
 import { PopupManager } from "./PopupManager";
+import { ScoreManager } from "./ScoreManager";
+
 const { ccclass, property } = _decorator;
 
 @ccclass("GameManager")
 export class GameManager extends Component {
-    private _score: number = 0;
+    @property(ScoreManager)
+    private readonly scoreManager: ScoreManager | null = null;
 
-    private _timeLeft: number = 0;
-    private _lastDisplayTime: number = -1;
-    private _isGameActive: boolean = false;
+    private _timeLeft = 0;
+    private _lastDisplay = -1;
+    private _active = false;
 
-    @property(PopupPause)
-    private readonly popupPause: PopupPause | null = null;
-
-    protected start() {
-        this._score = 0;
+    protected start(): void {
         this._timeLeft = GameConfig.GAME.TIME_LIMIT_SECONDS;
-        this._lastDisplayTime = this._timeLeft;
-        this._isGameActive = false;
-        EventManager.emit(EventName.GAME_START);
-        EventManager.emit(EventName.TIME_TICK, this._timeLeft);
+        this._lastDisplay = this._timeLeft;
+        this._active = false;
+
+        GameBus.emit("game:start");
+        GameBus.emit("timer:tick", { secondsLeft: this._timeLeft });
     }
 
-    protected onEnable() {
-        EventManager.on(EventName.ADD_SCORE, this._onAddScore, this);
-        EventManager.on(EventName.GAME_OVER, this._onGameOver, this);
-        EventManager.on(EventName.GAME_PAUSED, this._onGamePaused, this);
-        EventManager.on(EventName.GAME_RESUMED, this._onGameResumed, this);
-        EventManager.on(EventName.PLAYER_READY, this._onPlayerReady, this);
+    protected onEnable(): void {
+        GameBus.on("game:over", this._onGameOver, this);
+        GameBus.on("game:won", this._onGameWon, this);
+        GameBus.on("game:paused", this._onPaused, this);
+        GameBus.on("game:resumed", this._onResumed, this);
+        GameBus.on("player:ready", this._onPlayerReady, this);
     }
 
-    protected onDisable() {
-        EventManager.off(EventName.ADD_SCORE, this._onAddScore, this);
-        EventManager.off(EventName.GAME_OVER, this._onGameOver, this);
-        EventManager.off(EventName.GAME_PAUSED, this._onGamePaused, this);
-        EventManager.off(EventName.GAME_RESUMED, this._onGameResumed, this);
-        EventManager.off(EventName.PLAYER_READY, this._onPlayerReady, this);
+    protected onDisable(): void {
+        GameBus.offAll(this);
     }
 
     protected update(dt: number): void {
-        if (!this._isGameActive) return;
+        if (!this._active) return;
 
         this._timeLeft -= dt;
 
         if (this._timeLeft <= 0) {
             this._timeLeft = 0;
-            this._isGameActive = false;
-            EventManager.emit(EventName.TIME_TICK, 0);
-            EventManager.emit(EventName.GAME_OVER);
+            this._active = false;
+            GameBus.emit("timer:tick", { secondsLeft: 0 });
+            GameBus.emit("game:won");
             return;
         }
 
-        const currentIntTime = Math.ceil(this._timeLeft);
-        if (currentIntTime !== this._lastDisplayTime) {
-            this._lastDisplayTime = currentIntTime;
-            EventManager.emit(EventName.TIME_TICK, currentIntTime);
+        const ceil = Math.ceil(this._timeLeft);
+        if (ceil !== this._lastDisplay) {
+            this._lastDisplay = ceil;
+            GameBus.emit("timer:tick", { secondsLeft: ceil });
         }
-    }
-
-    private _onAddScore(points: number): void {
-        this._score += points;
     }
 
     private _onPlayerReady(): void {
-        this._isGameActive = true;
+        this._active = true;
     }
 
-    private _onGamePaused(): void {
-        this._isGameActive = false;
-        if (this.popupPause) {
-            this.popupPause.show();
-        }
+    private _onPaused(): void {
+        this._active = false;
         director.pause();
     }
 
-    private _onGameResumed(): void {
-        this._isGameActive = true;
+    private _onResumed(): void {
+        this._active = true;
         director.resume();
     }
 
     private _onGameOver(): void {
-        this._isGameActive = false;
-
+        this._active = false;
         director.pause();
-        if (PopupManager.instance) {
-            PopupManager.instance.showGameOver(this._score);
-        }
+        PopupManager.instance?.showGameOver(this.scoreManager?.score ?? 0);
+    }
+
+    private _onGameWon(): void {
+        this._active = false;
+        director.pause();
+        PopupManager.instance?.showGameOver(this.scoreManager?.score ?? 0);
     }
 }

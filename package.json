@@ -3,5 +3,8 @@
   "uuid": "258a6e1c-a41c-4fd3-a5fd-7b48bab09a60",
   "creator": {
     "version": "3.7.3"
+  },
+  "dependencies": {
+    "javascript-state-machine": "^3.1.0"
   }
 }
