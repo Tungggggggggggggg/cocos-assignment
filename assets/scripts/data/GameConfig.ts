@@ -18,10 +18,10 @@ export const GameConfig = {
     },
     LOADING: {
         MESSAGES: [
-            "Đang triệu hồi tài nguyên...",
-            "Đang rèn vũ khí...",
-            "Đang chuẩn bị thế giới...",
-            "Sẵn sàng chiến đấu!",
+            "Summoning resources...",
+            "Forging weapons...",
+            "Preparing the world...",
+            "Ready to fight!",
         ],
     },
 } as const;
